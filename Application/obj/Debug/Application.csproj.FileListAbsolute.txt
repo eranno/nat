@@ -1,0 +1,10 @@
+C:\Users\natali moshe\Desktop\pro\Application\Application\bin\Application.dll
+C:\Users\natali moshe\Desktop\pro\Application\Application\bin\Application.pdb
+C:\Users\natali moshe\Desktop\pro\Application\Application\obj\Debug\Application.csprojResolveAssemblyReference.cache
+C:\Users\natali moshe\Desktop\pro\Application\Application\obj\Debug\Application.dll
+C:\Users\natali moshe\Desktop\pro\Application\Application\obj\Debug\Application.pdb
+G:\Application\Application\bin\Application.dll
+G:\Application\Application\bin\Application.pdb
+G:\Application\Application\obj\Debug\Application.csprojResolveAssemblyReference.cache
+G:\Application\Application\obj\Debug\Application.dll
+G:\Application\Application\obj\Debug\Application.pdb
