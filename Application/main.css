@@ -54,6 +54,9 @@ form span {
 .toggle {
     display:none;
 }
+#js_toggle h3 {
+    cursor:pointer;
+}
 
 #search {
 float:left;

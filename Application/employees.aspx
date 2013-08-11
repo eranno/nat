@@ -6,6 +6,7 @@
 <head id="Head1" runat="server">
     <title>nat</title>
     <link rel="stylesheet" href="main.css" />
+    <script type="application/x-javascript" src="func.js"></script>
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
@@ -31,7 +32,7 @@
     </div>
 
     <form class="frame" id="form1" runat="server">
-        <div id="toggle">
+        <div id="js_toggle">
             <h3>הוספת עובד</h3>
             <div class="toggle">
                 <br /><span>תעודת זהות</span>
@@ -43,7 +44,7 @@
                 <br /><span>...</span>
                 <asp:TextBox runat="server" ID="arid" TextMode="Number"></asp:TextBox>
                 <br />
-                <asp:Button id="button" Text="שלח" runat="server" CssClass="button"/>
+                <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click"/>
             </div>
         </div>
     </form>

@@ -64,6 +64,7 @@
     <Content Include="clockReport.aspx" />
     <Content Include="default.aspx" />
     <Content Include="employees.aspx" />
+    <Content Include="func.js" />
     <Content Include="index.aspx" />
     <Content Include="index.css" />
     <Content Include="main.aspx" />
