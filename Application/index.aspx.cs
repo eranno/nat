@@ -9,7 +9,7 @@ namespace Application
 {
     public partial class index : System.Web.UI.Page
     {
-        private EmployeeBL bl;
+        private EmployeeBL bl = new EmployeeBL();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -18,27 +18,24 @@ namespace Application
 
         protected void Unnamed1_Click(object sender, EventArgs e)
         {
-            EmployeeDAL dl = new EmployeeDAL();
-            Label.Text = dl.arg();
-
-
-            bl = new EmployeeBL();
-            //bl.NewManger();
+     
+            //missing data?
             if (id.Text == "" || password.Text == "")
             {
                 Label.Text = "נא למלא את כל השדות";
                 return;
             }
 
-            
-            
 
+            bl = new EmployeeBL();
             //everything is ok
             if ( bl.LogInorOut(int.Parse(id.Text), password.Text, 1) )
             {
                 Session["id"] = id.Text;
                 Response.Redirect("main.aspx");
             }
+
+            //bad username or password
             else
             {
                 Label.Text = "ת\"ז או סיסמה שגויים";

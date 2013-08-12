@@ -7,7 +7,6 @@ namespace Application
 {
     public class Employee
     {
-
         private string password;
         private string lastName;
         private string firstName; 

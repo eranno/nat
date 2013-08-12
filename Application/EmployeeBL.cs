@@ -8,16 +8,33 @@ namespace Application
     public class EmployeeBL
     {
         private EmployeeDAL dal = new EmployeeDAL();
+
         //מכניס שעת כניסה או שעת יציאה
+        /**
+         * @in = 1
+         * @out = 0
+         */
         public bool LogInorOut(int user, string pas, int inorout)
         {
-          return dal.LogInorOut(user,pas,inorout); 
+            return dal.LogInorOut(user,pas,inorout); 
         }
 
-        public void NewManger()
+        public bool NewManger()
         {
-            dal.NewManger();
-            return;
+          // bool ok=  dal.NewManger();
+          
+           Employee employee = new Employee(302898739, "natali", "grinberg", 1, 1000000, 90, 120, 4, 12, 25, 25, 0, 0);
+          bool ok= AddEmployee(employee);
+           return ok;
+        }
+
+        public bool IsEmployeeExist(int user)
+        {
+            Employee emp = dal.GetEmployee(user);
+            if (emp != null)
+                return true;
+
+            return false;
         }
 
         //בודק אם זה מנהל או עובד
@@ -26,11 +43,6 @@ namespace Application
           return dal.IsManger(user);
         }
 
-
-
-
-
-
         //מקבל את כל הפרטים של העובד חוץ מסיסמא
         public Employee GetEmployee(int user)
         {
@@ -38,17 +50,20 @@ namespace Application
 
         }
 
-
-
-
         //הוספת עובד חדש לDB
-        public void AddEmployee(Employee m)
+        public bool AddEmployee(Employee m)
         {
+           /* dal.AddEmployee(m);
+            return;*/
+
+            bool exist;
+            exist = IsEmployeeExist(m.Id);
+            if (exist == true)
+                return false;
+
             dal.AddEmployee(m);
-            return;
+            return true;
         }
-
-
 
         //if ok=true the password change
         public void ChangePassword(int user, string newpas)
@@ -63,15 +78,10 @@ namespace Application
             return dal.GetAllEmployeeInWork();
         }
 
-
-
         public int Vacation(int user)
         {
             return dal.Vacation(user);
         }
-
-
-
 
 
         public int Sick(int user)
@@ -85,8 +95,6 @@ namespace Application
         {
             return dal.CountWorker(emp);
         }
-
-
 
         public LinkedList<Employee> GetAllEmployee()
         {

@@ -10,13 +10,13 @@ namespace Application
     public class EmployeeDAL
     {
         private SqlCeConnection connection;
-        //public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
+
         public const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
+        //public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
 
         public void connect()
         {
             connection = new SqlCeConnection("Data Source=" + DB_SOURCE);
-            
             connection.Open();
         }
 
@@ -26,14 +26,42 @@ namespace Application
         }
 
         //מכניס שעת כניסה או שעת יציאה
+        public bool LogInorOut2(int user, string pass, int inorout)
+        {
+            DateTime date = DateTime.Now;
+            String sqlString;
+            SqlCeCommand com;
+            int numberOfRecords = 0;
+
+            connect();
+
+            sqlString = "INSERT INTO `EntryAndExit` (`id`, `dateandtime`, `inorout`)"
+	                    + "SELECT e.`id`, '"+date+"' as dt, '"+inorout+"' as io"
+	                    + "FROM `EmployeeData` e "
+	                    + "WHERE e.`id` = '"+user+"' AND BINARY u.`password`='"+pass+"';";
+
+            //sqlString = "INSERT INTO EntryAndExit VALUES('" + user + "','" + date + "','" + inorout + "');";
+            com = new SqlCeCommand(sqlString, connection);
+            numberOfRecords = com.ExecuteNonQuery();
+
+            disconnect();
+
+            //if user and password ok
+            if (numberOfRecords > 0)
+                return true;
+            else
+                return false;
+        }
+
+        //מכניס שעת כניסה או שעת יציאה
         public bool LogInorOut(int user, string pas, int inorout)
         {
-            bool ok=false;//not pas
+            bool ok = false;    //user not found
             string command;
             SqlCeCommand com;
 
             connect();
-
+            //"WHERE u1.email = '$email' AND BINARY u1.`pass`='$pass';";
             command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
 
             com = new SqlCeCommand(command, connection);
@@ -52,9 +80,10 @@ namespace Application
                    // Console.WriteLine(currentTime.ToString());
                    // Console.WriteLine(currentTime.ToString("dd/MM/yyyy"));
                    // Console.WriteLine(currentTime.ToString("yyyy-MM-dd HH:mm"));
-                    String sqlString2 = "INSERT INTO EntryAndExit VALUES(" + "'" + user + "'" + "," + "'" + date + "'" + "," + "," + "'" + inorout + "')" + ";";
-                    SqlCeCommand com2 = new SqlCeCommand(sqlString2, connection);
-                    com.ExecuteNonQuery();
+
+                    String sqlString = "INSERT INTO EntryAndExit VALUES('" + user + "','" + date + "','" + inorout + "');";
+                    SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                    com2.ExecuteNonQuery();
 
                 }
             }
@@ -63,8 +92,6 @@ namespace Application
 
             return ok;
         }
-
-
 
         //בודק אם זה מנהל או עובד
         public bool IsManger(int user)
@@ -93,11 +120,6 @@ namespace Application
             return man;
         }
 
-
-
-
-
-
         //מקבל את כל הפרטים של העובד חוץ מסיסמא
         public Employee GetEmployee(int user)
         {
@@ -124,22 +146,6 @@ namespace Application
               return employee;
 
         }
-
-        public string arg()
-        {
-            Employee m = new Employee(302898739, "natali", "grinberg", 1, 1000000, 90, 120, 4, 12, 25, 25, 0, 0);
-            connect();
-            //INSERT INTO EmployeeData VALUES('302898739','natali','grinberg','0000','1','1000000','90','120','4','12','25','25','0','0');
-            String sqlString = "INSERT INTO EmployeeData VALUES('" +1230 + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
-            String sqlString2 = "INSERT INTO EmployeeData VALUES('" + m.Id + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
-            return sqlString;
-            SqlCeCommand com = new SqlCeCommand(sqlString, connection);
-            com.ExecuteNonQuery();
-            SqlCeCommand com2 = new SqlCeCommand(sqlString2, connection);
-            com2.ExecuteNonQuery();
-            disconnect();
-
-        }
         
 
         //הוספת עובד חדש לDB
@@ -147,9 +153,10 @@ namespace Application
         {
             connect();
 
+            //String sqlString = "INSERT INTO EmployeeData VALUES('" + m.Id + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
             String sqlString = "INSERT INTO EmployeeData VALUES('" + m.Id + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
-
                 SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+               // com.ExecuteNonQuery();
                 com.ExecuteNonQuery();
               disconnect();
           
@@ -198,7 +205,7 @@ namespace Application
         {
 
             int count = 0;
-            count = time.Subtract(DateTime.Parse(""+data[14])).Hours;
+            count = time.Subtract(DateTime.Parse(""+data[14])).Minutes;
             employee.AddLast(new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), count, int.Parse("" + data[13])));
         }
 
@@ -302,12 +309,57 @@ namespace Application
         }
 
 
-       public void NewManger()
+
+//כמות שעות שהעובד עבד באותו יום
+       public int HoursWorkInDay(int user, DateTime date)
+       {
+        
+           connect();
+           
+          string command = "SELECT * FROM EntryAndExit e1 WHERE  id = '" + user + "' AND  DateDiff(dd, e1.dateandtime, '" + date + "') = 0";
+
+           SqlCeCommand com = new SqlCeCommand(command, connection);
+           SqlCeDataReader data = com.ExecuteReader();
+
+           int count = 0;
+           while (data.Read())
+           {
+               count = date.Subtract(DateTime.Parse("" + data[14])).Minutes;
+               return count;
+           }
+
+           disconnect();
+
+
+           return count;
+
+       }
+        //כמות שעות שהוא עבד בחודש
+       public int HoursWorkInMonth(int user)
+       {
+           connect();
+           string command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
+
+           SqlCeCommand com = new SqlCeCommand(command, connection);
+
+           SqlCeDataReader data = com.ExecuteReader();
+
+           while (data.Read())
+           {
+               return int.Parse(""+data[13]);
+           }
+
+           disconnect();
+
+           return 0;
+       }
+    /*   public void NewManger()
        {
            Employee employee = new Employee(302898739, "natali","grinberg",1,1000000, 90, 120, 4, 12, 25, 25,0,0);
            AddEmployee(employee);
            return;
-       }
+
+       }*/
 
 
 

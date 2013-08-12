@@ -14,10 +14,5 @@ namespace Application
             if (Session["id"] == null)
                 Response.Redirect("index.aspx");
         }
-
-        protected void button_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

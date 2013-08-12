@@ -8,24 +8,22 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
-    <asp:Label ID="last" runat="server"></asp:Label>
-    <asp:Label ID="first" runat="server"></asp:Label>
+    
+    
 
     <div class="frame header">
-        <span>נתי גרינברג</span>
+        <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
         <br /><span id="time"></span>
     </div>
     <div class="frame">
-
-    הודעות: 0
-
+    הודעות: <asp:Label ID="msgs" runat="server"></asp:Label>
     </div>
     <div class="frame">
         <a href="vacations.aspx" class="button">חופשות</a>
         <a class="button">ימי מחלה</a>
         <a href="clockReport.aspx" class="button">דו"ח שעות</a>
     </div>
-    <asp:Panel>
+    <asp:Panel runat="server">
         <div id="Div1" class="frame" runat="server" visible="true">
             <span>ניהול:</span>
             <a href="employees.aspx" class="button" style="margin-right:7px;">עובדים</a>

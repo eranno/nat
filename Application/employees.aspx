@@ -6,6 +6,7 @@
 <head id="Head1" runat="server">
     <title>nat</title>
     <link rel="stylesheet" href="main.css" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
     <script type="application/x-javascript" src="func.js"></script>
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
