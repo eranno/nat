@@ -197,6 +197,14 @@ namespace Application
             + "INNER JOIN EmployeeData e2 ON e1.id=e2.id"
             +" GROUP BY id HAVING COUNT(e1.id)=1;";
 
+        command = "SELECT  e1.id, COUNT(e1.id) AS cc"
+                + "FROM     EntryAndExit AS e1 INNER JOIN"
+                + "EmployeeData AS e2 ON e1.id = e2.id"
+                + "WHERE  (DATEDIFF(dd, e1.dateandtime, '12/8/2013') >= 0)"
+                + "GROUP BY e1.id"
+                + "HAVING  (COUNT(e1.id) = 1)";
+
+
         SqlCeCommand com = new SqlCeCommand(command, connection);
 
         SqlCeDataReader data = com.ExecuteReader();

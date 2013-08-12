@@ -11,13 +11,14 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
-    <asp:Label ID="last" runat="server"></asp:Label>
-    <asp:Label ID="first" runat="server"></asp:Label>
-
     <div class="frame header">
-        <span>נתי גרינברג</span>
+        <span><asp:Label ID="Label1" runat="server"></asp:Label> <asp:Label ID="Label2" runat="server"></asp:Label></span>
         <br /><span id="time"></span>
     </div>
+
+    <asp:Panel>
+        <div id="msgs" runat="server" class="frame" visible="false">No records are available.</div>
+    </asp:Panel>
 
     <div class="frame">
         <img id="search" src="https://lh6.ggpht.com/IVdU2KpQmijHlotOGVzINvcGAja67hyNZkBjCjhwZTcKs6JmYobFkmlj5t_AjKy4dOc=w170" />
@@ -42,13 +43,36 @@
                 <asp:TextBox runat="server" ID="new_first" TextMode="SingleLine"></asp:TextBox>
                 <br /><span>שם משפחה</span>
                 <asp:TextBox runat="server" ID="new_last" TextMode="SingleLine"></asp:TextBox>
-                <br /><span>...</span>
-                <asp:TextBox runat="server" ID="arid" TextMode="Number"></asp:TextBox>
+                <br /><span>ימי מחלה</span>
+                <asp:TextBox runat="server" ID="new_sick" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>ימי חופשה</span>
+                <asp:TextBox runat="server" ID="new_vacation" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>שעות מינימום</span>
+                <asp:TextBox runat="server" ID="new_minhours" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>שעות מקסימום</span>
+                <asp:TextBox runat="server" ID="new_maxhours" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>overtimeinday</span>
+                <asp:TextBox runat="server" ID="new_overtimeinday" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>דרגה</span>
+                <asp:TextBox runat="server" ID="new_rank" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>שכר</span>
+                <asp:TextBox runat="server" ID="new_wage" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>overtimeWages</span>
+                <asp:TextBox runat="server" ID="new_overtimeWages" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>overtimeinmonth</span>
+                <asp:TextBox runat="server" ID="new_overtimeinmonth" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>timeheworkonday</span>
+                <asp:TextBox runat="server" ID="new_timeheworkonday" TextMode="SingleLine"></asp:TextBox>
+                <br /><span>timeheworkonmonth</span>
+                <asp:TextBox runat="server" ID="new_timeheworkonmonth" TextMode="SingleLine"></asp:TextBox>
                 <br />
+
                 <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click"/>
             </div>
         </div>
     </form>
+
+    <div class="frame footer"></div>
 
 </body>
 </html>

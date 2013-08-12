@@ -15,5 +15,6 @@ function displaytime() {
     $("time").innerHTML = datestring + " " + timestring;
 }
 
-window.setInterval(function () { displaytime(); }, 1000);
+window.onload = function () { displaytime(); };             //first
+window.setInterval(function () { displaytime(); }, 1000);   //interval
 

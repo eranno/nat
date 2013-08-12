@@ -24,8 +24,8 @@ namespace Application
           // bool ok=  dal.NewManger();
           
            Employee employee = new Employee(302898739, "natali", "grinberg", 1, 1000000, 90, 120, 4, 12, 25, 25, 0, 0);
-          bool ok= AddEmployee(employee);
-           return ok;
+          bool ok = AddEmployee(employee);
+          return ok;
         }
 
         public bool IsEmployeeExist(int user)
