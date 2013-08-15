@@ -9,11 +9,19 @@ namespace Application
 {
     public partial class index : System.Web.UI.Page
     {
-        private EmployeeBL bl = new EmployeeBL();
+        private EmployeeBL bl= new EmployeeBL();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Session["id"] = 55555;
+            //Response.Redirect("messages.aspx");
 
+            if (Session["id"] != null)
+            {
+                if (Request.QueryString["r"] == "outoftime")
+                id.Text = "" + Session["id"];
+                Session["id"] = null;
+            }
         }
 
         protected void Unnamed1_Click(object sender, EventArgs e)
@@ -26,8 +34,6 @@ namespace Application
                 return;
             }
 
-
-            bl = new EmployeeBL();
             //everything is ok
             if ( bl.LogInorOut(int.Parse(id.Text), password.Text, 1) )
             {

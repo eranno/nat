@@ -10,12 +10,15 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
-    <asp:Label ID="last" runat="server"></asp:Label>
-    <asp:Label ID="first" runat="server"></asp:Label>
-
     <div class="frame header">
-        <span>נתי גרינברג</span>
-        <br /><span id="time"></span>
+        <div class="left">
+            <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
+            <br /><span id="time"></span>
+        </div>
+        <div class="right">
+            <a>השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
+            <br /><br />
+        </div>
     </div>
 
     <div class="frame">

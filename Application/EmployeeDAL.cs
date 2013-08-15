@@ -10,8 +10,8 @@ namespace Application
     public class EmployeeDAL
     {
         private SqlCeConnection connection;
-
-        public const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
+        private const int Timeinday = 8;
+        private const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
         //public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
 
         public void connect()
@@ -25,33 +25,6 @@ namespace Application
             connection.Close();
         }
 
-        //מכניס שעת כניסה או שעת יציאה
-        public bool LogInorOut2(int user, string pass, int inorout)
-        {
-            DateTime date = DateTime.Now;
-            String sqlString;
-            SqlCeCommand com;
-            int numberOfRecords = 0;
-
-            connect();
-
-            sqlString = "INSERT INTO `EntryAndExit` (`id`, `dateandtime`, `inorout`)"
-	                    + "SELECT e.`id`, '"+date+"' as dt, '"+inorout+"' as io"
-	                    + "FROM `EmployeeData` e "
-	                    + "WHERE e.`id` = '"+user+"' AND BINARY u.`password`='"+pass+"';";
-
-            //sqlString = "INSERT INTO EntryAndExit VALUES('" + user + "','" + date + "','" + inorout + "');";
-            com = new SqlCeCommand(sqlString, connection);
-            numberOfRecords = com.ExecuteNonQuery();
-
-            disconnect();
-
-            //if user and password ok
-            if (numberOfRecords > 0)
-                return true;
-            else
-                return false;
-        }
 
         //מכניס שעת כניסה או שעת יציאה
         public bool LogInorOut(int user, string pas, int inorout)
@@ -59,10 +32,14 @@ namespace Application
             bool ok = false;    //user not found
             string command;
             SqlCeCommand com;
+            DateTime date = DateTime.Now;
+            string format = "MM/dd/yyyy HH:mm:ss";    // Use this format
 
             connect();
-            //"WHERE u1.email = '$email' AND BINARY u1.`pass`='$pass';";
-            command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
+            command = " SELECT  ed.password, ee.id"
+                    + " FROM     EmployeeData AS ed LEFT OUTER JOIN"
+                    + " EntryAndExit AS ee ON ed.id = ee.id AND ee.inorout = "+inorout+" AND DATEDIFF(dd, ee.dateandtime, '" + date.ToString(format) + "') = 0"
+                    + " WHERE  (ed.id = '"+user+"')";
 
             com = new SqlCeCommand(command, connection);
 
@@ -70,21 +47,19 @@ namespace Application
 
             while (data.Read())
             {
-                if (pas.Equals(data[3]))
+                //password ok, let him in
+                if (pas.Equals(data[0]))
                 {
-                    ok = true;//ps ok
-                   
-            
-                    //כניסת משתמש 
-                    DateTime date = DateTime.Now;
-                   // Console.WriteLine(currentTime.ToString());
-                   // Console.WriteLine(currentTime.ToString("dd/MM/yyyy"));
-                   // Console.WriteLine(currentTime.ToString("yyyy-MM-dd HH:mm"));
+                    ok = true;
+                  
 
-                    String sqlString = "INSERT INTO EntryAndExit VALUES('" + user + "','" + date + "','" + inorout + "');";
-                    SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                    com2.ExecuteNonQuery();
-
+                    //if not entered today than mark enter time
+                    if (!user.Equals(data[1]))
+                    {
+                        String sqlString = "INSERT INTO EntryAndExit VALUES('" + user + "','" + date.ToString(format) + "','" + inorout + "');";
+                        SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                        com2.ExecuteNonQuery();
+                    }
                 }
             }
 
@@ -121,7 +96,7 @@ namespace Application
         }
 
         //מקבל את כל הפרטים של העובד חוץ מסיסמא
-        public Employee GetEmployee(int user)
+        public Employee GetEmployeeId(int user)
         {
              Employee employee = null;
 
@@ -132,6 +107,7 @@ namespace Application
 
               command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
 
+              
               com = new SqlCeCommand(command, connection);
 
               SqlCeDataReader data = com.ExecuteReader();
@@ -140,10 +116,40 @@ namespace Application
               {
                   employee = new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), int.Parse("" + data[12]), int.Parse("" + data[13]));
               }
-
+             
               disconnect();
 
               return employee;
+
+        }
+
+
+        //מקבל את כל הפרטים של העובד חוץ מסיסמא
+        public Employee GetEmployeeName(string first, string last)
+        {
+            Employee employee = null;
+
+            string command;
+            SqlCeCommand com;
+
+            connect();
+
+            command = "SELECT * FROM EmployeeData WHERE firstname = '" + first + "' AND lastname='"+last+"';";
+
+
+
+            com = new SqlCeCommand(command, connection);
+
+            SqlCeDataReader data = com.ExecuteReader();
+
+            while (data.Read())
+            {
+                employee = new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), int.Parse("" + data[12]), int.Parse("" + data[13]));
+            }
+
+            disconnect();
+
+            return employee;
 
         }
         
@@ -167,17 +173,39 @@ namespace Application
 
 
         //if ok=true the password change
-        public void ChangePassword(int user,string newpas)
+        public bool ChangePassword(int user, string oldpass, string newpass1, string newpass2)
         {
             connect();
+            bool havenewpass = false;
+            string command;
+            SqlCeCommand com;
+      
+            command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
 
-            String sqlString = "UPDATE EmployeeData SET password= '" + newpas + "' WHERE id= '" + user + "';";
-            SqlCeCommand com = new SqlCeCommand(sqlString, connection);
-            com.ExecuteNonQuery();
+            com = new SqlCeCommand(command, connection);
+
+            SqlCeDataReader data = com.ExecuteReader();
+
+            while (data.Read())
+            {
+                if (("" + data[2]).Equals(oldpass))
+                {
+                    if (newpass1.Equals(newpass2))
+                    {
+                        String sqlString = "UPDATE EmployeeData SET password= '" + newpass1 + "' WHERE id= '" + user + "';";
+                        SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                        com2.ExecuteNonQuery();
+                        havenewpass = true;
+                        break;
+                    }
+                 
+                }
+            }
+
 
             disconnect();
 
-            return;
+            return havenewpass;
         }
 
         //מחזיר את כל העובדים עם כל הנתונים שלהם שנמצאים עכשיו בעבודה
@@ -185,38 +213,46 @@ namespace Application
     {
         LinkedList<Employee> employee = new LinkedList<Employee>();
         DateTime time = DateTime.Now;
-        string dateoftime= time.ToString("dd/MM/yyyy");
+        string dateoftime= time.ToString("MM/dd/yyyy");
          string command;
         connect();
-       // command = "SELECT * FROM EmployeeData WHERE inorout = '" + 1 + "';";
-      /*  command = "SELECT * FROM EntryAndExit WHERE inorout = '" + 1 + "' AND "
-            + "DateDiff(dd, dateandtime, '"+dateoftime+"') = 0  ;";*/
-
-
-        command = "SELECT e2.* e1.dateandtime FROM EntryAndExit e1 WHERE DateDiff(dd, e1.dateandtime, '" + dateoftime + "') = 0"
-            + "INNER JOIN EmployeeData e2 ON e1.id=e2.id"
-            +" GROUP BY id HAVING COUNT(e1.id)=1;";
-
-        command = "SELECT  e1.id, COUNT(e1.id) AS cc"
-                + "FROM     EntryAndExit AS e1 INNER JOIN"
-                + "EmployeeData AS e2 ON e1.id = e2.id"
-                + "WHERE  (DATEDIFF(dd, e1.dateandtime, '12/8/2013') >= 0)"
-                + "GROUP BY e1.id"
-                + "HAVING  (COUNT(e1.id) = 1)";
+ 
+        command = " SELECT  id, dateandtime"
+                + " FROM     EntryAndExit"
+                + " WHERE  (DATEDIFF(dd, dateandtime, '" + dateoftime + "') = 0) AND (inorout = 1) AND (id NOT IN"
+                + " (SELECT  id"
+                + " FROM     EntryAndExit"
+                + " WHERE  (DATEDIFF(dd, dateandtime, '" + dateoftime + "') = 0) AND (inorout = 0)))";
 
 
         SqlCeCommand com = new SqlCeCommand(command, connection);
 
         SqlCeDataReader data = com.ExecuteReader();
 
+
         while (data.Read())
         {
 
-            int count = 0;
-            count = time.Subtract(DateTime.Parse(""+data[14])).Minutes;
-            employee.AddLast(new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), count, int.Parse("" + data[13])));
-        }
+           // int count = 0;
+           // count = time.Subtract(DateTime.Parse("" + data[1])).Hours;
 
+            int count = 0;
+            count = time.Subtract(DateTime.Parse("" + data[1])).Minutes;
+
+
+            String sqlString = "UPDATE EmployeeData SET timeheworkonday= '" + count + "' WHERE id= '" + int.Parse("" + data[0]) + "';";
+            SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+            com2.ExecuteNonQuery();
+
+            command = "SELECT * FROM EmployeeData WHERE id = '" + int.Parse("" + data[0]) + "';";
+            com = new SqlCeCommand(command, connection);
+
+            SqlCeDataReader data2 = com.ExecuteReader();
+            while (data2.Read())
+            {
+                employee.AddLast(new Employee(int.Parse("" + data2[0]), "" + data2[1], "" + "" + data2[2], int.Parse("" + data2[4]), int.Parse("" + data2[5]), int.Parse("" + data2[6]), int.Parse("" + data2[7]), int.Parse("" + data2[8]), int.Parse("" + data2[9]), int.Parse("" + data2[10]), int.Parse("" + data2[11]), int.Parse("" + data2[12]), int.Parse("" + data2[13])));
+            }
+        }
         disconnect();
 
       
@@ -361,14 +397,291 @@ namespace Application
 
            return 0;
        }
-    /*   public void NewManger()
+
+        //הודעה לא נקראה =0
+        //הודעה מאושרת עי המנהל =1
+       public LinkedList<Massege> GetMassege(int user)
        {
-           Employee employee = new Employee(302898739, "natali","grinberg",1,1000000, 90, 120, 4, 12, 25, 25,0,0);
-           AddEmployee(employee);
-           return;
+           LinkedList<Massege> mes = new LinkedList<Massege>();
 
-       }*/
+           connect();
+           string command = "SELECT r.idsender, r.idreceiver, r.type, r.note, r.approve, r.date, r.isread, e.firstname, e.lastname FROM RequestsAndComments AS r INNER JOIN EmployeeData AS e ON r.idsender=e.id WHERE r.idreceiver = '" + user + "' AND r.isread=0;";
 
+           SqlCeCommand com = new SqlCeCommand(command, connection);
+
+           SqlCeDataReader data = com.ExecuteReader();
+
+           while (data.Read())
+           {
+               mes.AddLast(new Massege(int.Parse("" + data[0]), int.Parse("" + data[1]), int.Parse("" + data[2]), "" + data[3], int.Parse("" + data[4]),"" +data[5], int.Parse("" + data[6]), "" + data[7], "" + data[8]));
+           }
+
+           disconnect();
+
+           return mes;
+
+       }
+
+
+
+       public void SetMassege(Massege mes)
+       {
+           connect();
+           String sqlString = "INSERT INTO RequestsAndComments VALUES('" + mes.Idreceiver + "','" + mes.Idsender + "','" + mes.Type + "','" + mes.Note + "','" + mes.Approve + "','" + mes.Date + "','" + mes.Read + "');";
+           SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+           com.ExecuteNonQuery();
+           disconnect();
+       }
+
+
+       public void SetIsRead(int id)
+       {
+           connect();
+
+           String sqlString = "UPDATE RequestsAndComments SET isread= '" + 1 + "' WHERE id= '" + id + "';";
+           SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+           com.ExecuteNonQuery();
+
+           disconnect();
+
+          
+       }
+        
+
+       private LinkedList<Report> ReportEntryAndExit(int user, DateTime date)
+       {
+           LinkedList<Report> rep = new LinkedList<Report>();
+
+           connect();
+           string command = "SELECT * FROM EntryAndExit WHERE id = '" + user + "' ORDER BY dateandtime ASC;";
+
+           SqlCeCommand com = new SqlCeCommand(command, connection);
+
+           SqlCeDataReader data = com.ExecuteReader();
+
+           while (data.Read())
+           {
+               if (date.ToString("MM").Equals(DateTime.Parse("" + data[1]).ToString("MM")))
+               {
+                   if (int.Parse("" + data[2]) == 1)
+                   {
+                       Report reports = new Report();
+                       reports.Date = DateTime.Parse("" + data[1]);
+                       if (int.Parse("" + data[2]) == 1)
+                           reports.Entry = DateTime.Parse("" + data[1]);
+                       if (int.Parse("" + data[2]) == 0)
+                           reports.Exit = DateTime.Parse("" + data[1]);
+                       rep.AddLast(reports);
+                   }
+                   else
+                   {
+                       foreach (Report i in rep)
+                       {
+                           if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[1]).ToString("dd")))
+                           {
+                               i.Date = DateTime.Parse("" + data[1]);
+                               if (int.Parse("" + data[2]) == 1)
+                                   i.Entry = DateTime.Parse("" + data[1]);
+                               if (int.Parse("" + data[2]) == 0)
+                                   i.Exit = DateTime.Parse("" + data[1]);
+
+                               break;
+                           }
+                       }
+
+                   }
+               }
+           }
+
+           disconnect();
+
+           return rep;
+       }
+
+       private LinkedList<Report> ReportNote(LinkedList<Report> rep, int user)
+       {
+           connect();
+           string command = "SELECT idsender, idreceiver, type, note, approve, CONVERT(datetime, date, 100) AS date, isread FROM RequestsAndComments WHERE idsender = '" + user + "' And approve = 1 ;";
+           SqlCeCommand com = new SqlCeCommand(command, connection);
+
+           SqlCeDataReader data = com.ExecuteReader();
+
+           while (data.Read())
+           {
+               if (int.Parse("" + data[2]) != 2)
+               {
+                   int x = 0;
+                   foreach (Report i in rep)
+                   {
+                       if (i.Date.ToString("MMMM").Equals(DateTime.Parse("" + data[5]).ToString("MMMM")))
+                       {
+                           if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[5]).ToString("dd")))
+                           {
+                               x = 1;
+                               i.Type = int.Parse("" + data[2]);
+                               i.Note = "" + data[3];
+                               break;
+                           }
+                           else
+                           {
+                               if (x == 0)
+                               {
+
+                                   Report reports = new Report();
+                                   reports.Date = DateTime.Parse("" + data[1]);
+                                   rep.AddLast(reports);
+
+                               }
+                               x = 0;
+                           }
+                       }
+                   }
+
+               }
+           }
+           disconnect();
+           return rep;
+       }
+
+       private LinkedList<Report> ReportHours(LinkedList<Report> rep, int user)
+       {
+           foreach (Report i in rep)
+           {
+               int time2 = (int)i.Exit.Subtract(i.Entry).TotalMinutes;
+               int consttime = Timeinday * 60;
+               if (time2 > consttime)
+               {
+                   i.Excesshours = (time2 - consttime);
+                   i.Lackhours = 0;
+                   i.Hours = time2;
+               }
+               else
+               {
+                   i.Excesshours = 0;
+                   i.Lackhours = (consttime - time2);
+                   i.Hours = time2;
+               }
+
+           }
+
+           return rep;
+       }
+
+       public LinkedList<Report> Reports(int user, DateTime date)
+       {
+           LinkedList<Report> rep = ReportEntryAndExit(user, date);
+           rep = ReportNote(rep, user);
+           rep = ReportHours(rep, user);
+           return rep;
+       }
+
+
+        
+
+       /*
+                * types:
+                * 1=sick
+                * 2=vacation
+                * 3=fast
+                * 4=job
+                * 5=vacation request
+                */
+       public string Type(int x)
+       {
+           switch (x)
+           {
+               case 1: return "sick";
+               case 2: return "vacation";
+               case 3: return "fast";
+               case 4: return "job";
+               case -1: return "";
+
+           }
+
+           return "";
+       }
+
+
+       public bool ChangeWorker(Employee empnew)
+       {
+           connect();
+          
+               if (!empnew.FirstName.Equals(""))
+               {
+                   String sqlString = "UPDATE EmployeeData SET firstname= '" + empnew.FirstName + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();  
+               }
+
+               if (!empnew.LastName.Equals(""))
+               {
+                   String sqlString = "UPDATE EmployeeData SET lastname= '" + empnew.LastName + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Rank!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET rank= '" + empnew.Rank + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Wage!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET wage= '" + empnew.Wage + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Minhours!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET minhours= '" + empnew.Minhours + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Maxhours!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET maxhours= '" + empnew.Maxhours + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Overtimeinday!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET overtimeinday= '" + empnew.Overtimeinday + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Overtimeinmonth!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET overtimeinmonth= '" + empnew.Overtimeinmonth + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Sick!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET sick= '" + empnew.Sick + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+               if (empnew.Vacation!=-1)
+               {
+                   String sqlString = "UPDATE EmployeeData SET vacation= '" + empnew.Vacation + "' WHERE id= '" + empnew.Id + "';";
+                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                   com2.ExecuteNonQuery();
+               }
+
+           disconnect();
+
+           
+
+           return false;
+       }
 
 
     }

@@ -21,8 +21,6 @@ namespace Application
 
         public bool NewManger()
         {
-          // bool ok=  dal.NewManger();
-          
            Employee employee = new Employee(302898739, "natali", "grinberg", 1, 1000000, 90, 120, 4, 12, 25, 25, 0, 0);
           bool ok = AddEmployee(employee);
           return ok;
@@ -30,7 +28,7 @@ namespace Application
 
         public bool IsEmployeeExist(int user)
         {
-            Employee emp = dal.GetEmployee(user);
+            Employee emp = dal.GetEmployeeId(user);
             if (emp != null)
                 return true;
 
@@ -44,18 +42,19 @@ namespace Application
         }
 
         //מקבל את כל הפרטים של העובד חוץ מסיסמא
-        public Employee GetEmployee(int user)
+        public Employee GetEmployeeId(int user)
         {
-            return dal.GetEmployee(user);
+            return dal.GetEmployeeId(user);
+        }
 
+        public Employee GetEmployeeName(string first, string last)
+        {
+            return dal.GetEmployeeName(first,last);
         }
 
         //הוספת עובד חדש לDB
         public bool AddEmployee(Employee m)
         {
-           /* dal.AddEmployee(m);
-            return;*/
-
             bool exist;
             exist = IsEmployeeExist(m.Id);
             if (exist == true)
@@ -65,11 +64,11 @@ namespace Application
             return true;
         }
 
-        //if ok=true the password change
-        public void ChangePassword(int user, string newpas)
+        //if work=true the password change
+        public bool ChangePassword(int user, string oldpass, string newpass1, string newpass2)
         {
-            dal.ChangePassword(user,newpas);
-            return;
+            bool work= dal.ChangePassword(user, oldpass, newpass1, newpass2);
+            return work;
         }
 
         //מחזיר את כל העובדים עם כל הנתונים שלהם שנמצאים עכשיו בעבודה
@@ -101,7 +100,65 @@ namespace Application
             return dal.GetAllEmployee();
         }
 
+        //parse string to int. on fail return -1;
+        public int toInt(string Str)
+        {
+            Str = Str.Trim();
+            int Num;
+            bool isNum = int.TryParse(Str, out Num);
+            if (isNum)
+                return Num;
+            else
+                return -1;
+        }
 
+
+        public LinkedList<Massege> GetMassege(int user)
+        {
+            return dal.GetMassege(user);
+        }
+
+        /*
+         * types:
+         * 1=sick
+         * 2=vacation
+         * 3=fast
+         * 4=job
+         * 5=vacation request
+         */
+        public void SetMassege(int idreceiver, int idsender, int type, string note)
+        {
+            DateTime date = DateTime.Now;
+            string dateoftime = date.ToString("MM/dd/yyyy");
+            Massege mes = new Massege(idreceiver, idsender, type, note, 0, dateoftime, 0);
+           dal.SetMassege(mes);
+           return;
+        }
+
+
+
+        
+          public void SetIsRead(int id)
+           {
+              dal.SetIsRead(id);
+           }
+          
+          public LinkedList<Report> Reports(int user, DateTime date)
+           {
+               return dal.Reports(user, date);
+           }
+
+
+          public string Type(int x)
+          {
+              return dal.Type(x);
+          }
+
+
+          public bool ChangeWorker(Employee empnew)
+          {
+              return dal.ChangeWorker(empnew);
+          }
 
     }
 }

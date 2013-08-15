@@ -62,13 +62,16 @@
     <Content Include="App_Data\StatesDB.sdf" />
     <Content Include="clock.js" />
     <Content Include="clockReport.aspx" />
+    <Content Include="msgs.js" />
     <Content Include="default.aspx" />
+    <Content Include="disconnect.aspx" />
     <Content Include="employees.aspx" />
     <Content Include="func.js" />
     <Content Include="index.aspx" />
     <Content Include="index.css" />
     <Content Include="main.aspx" />
     <Content Include="main.css" />
+    <Content Include="messages.aspx" />
     <Content Include="vacations.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -86,6 +89,13 @@
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="disconnect.aspx.cs">
+      <DependentUpon>disconnect.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="disconnect.aspx.designer.cs">
+      <DependentUpon>disconnect.aspx</DependentUpon>
     </Compile>
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeBL.cs" />
@@ -111,7 +121,16 @@
     <Compile Include="main.aspx.designer.cs">
       <DependentUpon>main.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Massege.cs" />
+    <Compile Include="messages.aspx.cs">
+      <DependentUpon>messages.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="messages.aspx.designer.cs">
+      <DependentUpon>messages.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report.cs" />
     <Compile Include="vacations.aspx.cs">
       <DependentUpon>vacations.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

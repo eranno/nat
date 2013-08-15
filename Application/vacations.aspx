@@ -10,17 +10,20 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
-    <asp:Label ID="last" runat="server"></asp:Label>
-    <asp:Label ID="first" runat="server"></asp:Label>
-
     <div class="frame header">
-        <span>נתי גרינברג</span>
-        <br /><span id="time"></span>
+        <div class="left">
+            <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
+            <br /><span id="time"></span>
+        </div>
+        <div class="right">
+            <a href="index.aspx?r=outoftime">השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
+            <br /><br />
+        </div>
     </div>
 
     <div class="frame">
         <h3>מאזן חופשות</h3>
-        <span>יתרה: 0</span>
+        <span>יתרה: <asp:Label ID="totalSum" runat="server"></asp:Label></span>
         <asp:Table ID="Table1" GridLines="Both" runat="server">
             <asp:TableHeaderRow>
                 <asp:TableHeaderCell>חודש</asp:TableHeaderCell>
@@ -41,9 +44,12 @@
                 <br /><span>משך</span>
                 <asp:TextBox runat="server" ID="during" TextMode="Number"></asp:TextBox>
                 <br />
-                <asp:Button id="button" Text="שלח" runat="server" CssClass="button"/>
+                <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click"/>
             </div>
         </div>
     </form>
+
+    <div class="frame footer"></div>
+
 </body>
 </html>

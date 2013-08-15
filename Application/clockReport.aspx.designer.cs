@@ -22,15 +22,6 @@ namespace Application {
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
         
         /// <summary>
-        /// last control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label last;
-        
-        /// <summary>
         /// first control.
         /// </summary>
         /// <remarks>
@@ -38,6 +29,15 @@ namespace Application {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label first;
+        
+        /// <summary>
+        /// last control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label last;
         
         /// <summary>
         /// Table1 control.

@@ -1,11 +1,14 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="main.aspx.cs" Inherits="Application.main" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="messages.aspx.cs" Inherits="Application.messages" %>
 
 <!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
 <head id="Head1" runat="server">
     <title>nat</title>
     <link rel="stylesheet" href="main.css" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
     <script type="application/x-javascript" src="clock.js"></script>
+    <script type="application/x-javascript" src="msgs.js"></script>
 </head>
 <body>
     <div class="frame header">
@@ -18,24 +21,21 @@
             <br /><br />
         </div>
     </div>
-    <!--
-    <div class="frame">
+
+    <form class="frame" runat="server">        
+        הודעות: <asp:Label ID="msgs" runat="server"></asp:Label>
         <asp:Table ID="Table1" GridLines="Both" runat="server">
+            <asp:TableHeaderRow>
+                <asp:TableHeaderCell>תאריך</asp:TableHeaderCell>
+                <asp:TableHeaderCell>השולח</asp:TableHeaderCell>
+                <asp:TableHeaderCell>סוג</asp:TableHeaderCell>
+                <asp:TableHeaderCell>מאושר</asp:TableHeaderCell>
+            </asp:TableHeaderRow>
         </asp:Table>
-    </div>
-    -->
-    <div class="frame">
-        <a href="vacations.aspx" class="button">חופשות</a>
-        <a class="button">ימי מחלה</a>
-        <a href="clockReport.aspx" class="button">דו"ח שעות</a>
-        <a href="messages.aspx" class="button">הודעות[<asp:Label ID="msgs" runat="server"></asp:Label>]</a>
-    </div>
-    <asp:Panel runat="server">
-        <div id="Div1" class="frame" runat="server" visible="true">
-            <span>ניהול:</span>
-            <a href="employees.aspx" class="button" style="margin-right:-3px;">עובדים</a>
-        </div>
-    </asp:Panel>
+       
+
+
+    </form>
 
     <div class="frame footer"></div>
 </body>

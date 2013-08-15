@@ -10,6 +10,7 @@ namespace Application
     public partial class employees : System.Web.UI.Page
     {
         private EmployeeBL bl;
+        private LinkedList<Employee> eList;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -17,33 +18,65 @@ namespace Application
                 Response.Redirect("index.aspx");
 
             bl = new EmployeeBL();
+            Employee employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
 
-            //get employees list
-            LinkedList<Employee> eList = bl.GetAllEmployeeInWork();
-            //foreach (Employee emp in eList)
-            //{
+            //user info
+            last.Text = employee.LastName;
+            first.Text = employee.FirstName;
+
+
+            //get all employees list
+            eList = bl.GetAllEmployee();
+            foreach (Employee emp in eList)
+            {
                 TableRow tRow = new TableRow();
                 TableCell tCell1 = new TableCell();
                 TableCell tCell2 = new TableCell();
                 TableCell tCell3 = new TableCell();
                 TableCell tCell4 = new TableCell();
 
-                tCell1.Text = "1";
-                tCell2.Text = "2";
-                tCell3.Text = "3";
-                tCell4.Text = "4";
+                tCell1.Text = ""+emp.Id;
+                tCell2.Text = emp.FirstName;
+                tCell3.Text = emp.LastName;
+                tCell4.Text = ""+emp.Rank;
 
                 tRow.Cells.Add(tCell1);
                 tRow.Cells.Add(tCell2);
                 tRow.Cells.Add(tCell3);
                 tRow.Cells.Add(tCell4);
                 Table1.Rows.Add(tRow);
-            //}
+            }
+
+
+            //get current employees list
+            eList = bl.GetAllEmployeeInWork();
+            foreach (Employee emp in eList)
+            {
+                TableRow tRow = new TableRow();
+                TableCell tCell1 = new TableCell();
+                TableCell tCell2 = new TableCell();
+                TableCell tCell3 = new TableCell();
+                TableCell tCell4 = new TableCell();
+                TableCell tCell5 = new TableCell();
+
+                tCell1.Text = "" + emp.Id;
+                tCell2.Text = emp.FirstName;
+                tCell3.Text = emp.LastName;
+                tCell4.Text = "" + emp.Rank;
+                tCell5.Text = (emp.Timeheworkonday / 60) + ":" + emp.Timeheworkonday;
+
+                tRow.Cells.Add(tCell1);
+                tRow.Cells.Add(tCell2);
+                tRow.Cells.Add(tCell3);
+                tRow.Cells.Add(tCell4);
+                tRow.Cells.Add(tCell5);
+                Table2.Rows.Add(tRow);
+            }
 
 
         }
 
-        protected void button_Click(object sender, EventArgs e)
+        protected void button_Click4(object sender, EventArgs e)
         {
             //validate info
             int id                  = int.Parse(new_id.Text);
@@ -83,6 +116,38 @@ namespace Application
             else
                 msgs.InnerText = "שגיאה: העובד כבר קיים במערכת";
             msgs.Visible = true;
+        }
+
+        protected void button_Click3(object sender, EventArgs e)
+        {
+            Employee emp;
+
+            //id
+            if (int.Parse(js_select.Value) == 1)
+            {
+                int id = bl.toInt(opt_id.Text);
+                emp = bl.GetEmployeeId(id);
+            }
+
+            //first + last name
+            else
+            {
+                emp = bl.GetEmployeeName(opt_first.Text, opt_last.Text);
+            }
+
+            if (emp == null)
+            {
+                msgs.InnerText = "שגיאה: העובד לא נמצא!";
+                msgs.Visible = true;
+
+                opt_id.Text = "";
+                opt_first.Text = "";
+                opt_last.Text = "";
+            }
+            else
+            {
+                Response.Redirect("main.aspx?id="+emp.Id);
+            }
         }
     }
 }
