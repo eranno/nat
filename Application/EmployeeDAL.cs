@@ -136,8 +136,6 @@ namespace Application
 
             command = "SELECT * FROM EmployeeData WHERE firstname = '" + first + "' AND lastname='"+last+"';";
 
-
-
             com = new SqlCeCommand(command, connection);
 
             SqlCeDataReader data = com.ExecuteReader();
@@ -159,20 +157,15 @@ namespace Application
         {
             connect();
 
-            //String sqlString = "INSERT INTO EmployeeData VALUES('" + m.Id + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
             String sqlString = "INSERT INTO EmployeeData VALUES('" + m.Id + "','" + m.FirstName + "','" + m.LastName + "','" + m.Password + "','" + m.Rank + "','" + m.Wage + "','" + m.Minhours + "','" + m.Maxhours + "','" + m.Overtimeinday + "','" + m.Overtimeinmonth + "','" + m.Sick + "','" + m.Vacation + "','" + m.Timeheworkonday + "','" + m.Timeheworkonmonth + "');";
                 SqlCeCommand com = new SqlCeCommand(sqlString, connection);
-               // com.ExecuteNonQuery();
                 com.ExecuteNonQuery();
               disconnect();
-          
-
-
         }
 
 
 
-        //if ok=true the password change
+        //change password. return true if success
         public bool ChangePassword(int user, string oldpass, string newpass1, string newpass2)
         {
             connect();
@@ -561,11 +554,11 @@ namespace Application
                    i.Lackhours = (consttime - time2);
                    i.Hours = time2;
                }
-
            }
 
            return rep;
        }
+
 
        public LinkedList<Report> Reports(int user, DateTime date)
        {
@@ -576,111 +569,106 @@ namespace Application
        }
 
 
-        
+        //Notes reason dictionery
+        public string Type(int x)
+        {
+            switch (x)
+            {
+                case 1: return "sick";
+                case 2: return "vacation";
+                case 3: return "fast";
+                case 4: return "job";
+                case 5: return "vacation request";
+                default: return ""; //-1
+            }
+        }
 
-       /*
-                * types:
-                * 1=sick
-                * 2=vacation
-                * 3=fast
-                * 4=job
-                * 5=vacation request
-                */
-       public string Type(int x)
+       //update employee info
+       public void updateEmployee(Employee empnew)
        {
-           switch (x)
-           {
-               case 1: return "sick";
-               case 2: return "vacation";
-               case 3: return "fast";
-               case 4: return "job";
-               case -1: return "";
+            bool exc = false;
+            String sqlString = "";
+            
 
-           }
+            if (!empnew.FirstName.Equals(""))
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "firstname= '" + empnew.FirstName;
+                exc = true;
+            }
 
-           return "";
-       }
+            if (!empnew.LastName.Equals(""))
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET lastname= '" + empnew.LastName;
+                exc = true;
+            }
 
+            if (empnew.Rank != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET rank= '" + empnew.Rank;
+                exc = true;
+            }
 
-       public bool ChangeWorker(Employee empnew)
-       {
-           connect();
-          
-               if (!empnew.FirstName.Equals(""))
-               {
-                   String sqlString = "UPDATE EmployeeData SET firstname= '" + empnew.FirstName + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();  
-               }
+            if (empnew.Wage != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET wage= '" + empnew.Wage;
+                exc = true;
+            }
 
-               if (!empnew.LastName.Equals(""))
-               {
-                   String sqlString = "UPDATE EmployeeData SET lastname= '" + empnew.LastName + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Minhours != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET minhours= '" + empnew.Minhours;
+                exc = true;
+            }
 
-               if (empnew.Rank!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET rank= '" + empnew.Rank + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Maxhours != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET maxhours= '" + empnew.Maxhours;
+                exc = true;
+            }
 
-               if (empnew.Wage!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET wage= '" + empnew.Wage + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Overtimeinday != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET overtimeinday= '" + empnew.Overtimeinday;
+                exc = true;
+            }
 
-               if (empnew.Minhours!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET minhours= '" + empnew.Minhours + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Overtimeinmonth != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET overtimeinmonth= '" + empnew.Overtimeinmonth;
+                exc = true;
+            }
 
-               if (empnew.Maxhours!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET maxhours= '" + empnew.Maxhours + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Sick != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET sick= '" + empnew.Sick;
+                exc = true;
+            }
 
-               if (empnew.Overtimeinday!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET overtimeinday= '" + empnew.Overtimeinday + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
+            if (empnew.Vacation != -1)
+            {
+                if (exc) sqlString += " AND ";
+                sqlString += "UPDATE EmployeeData SET vacation= '" + empnew.Vacation;
+                exc = true;
+            }
 
-               if (empnew.Overtimeinmonth!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET overtimeinmonth= '" + empnew.Overtimeinmonth + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
-
-               if (empnew.Sick!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET sick= '" + empnew.Sick + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
-
-               if (empnew.Vacation!=-1)
-               {
-                   String sqlString = "UPDATE EmployeeData SET vacation= '" + empnew.Vacation + "' WHERE id= '" + empnew.Id + "';";
-                   SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                   com2.ExecuteNonQuery();
-               }
-
-           disconnect();
-
-           
-
-           return false;
+            //execute
+            if (exc)
+            {
+                sqlString = "UPDATE EmployeeData SET " + sqlString + " WHERE id= '" + empnew.Id + "';";
+                connect();
+                SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                com2.ExecuteNonQuery();
+                disconnect();
+            }
        }
 
 
