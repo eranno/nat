@@ -155,10 +155,10 @@ namespace Application
           }
 
 
-          public bool ChangeWorker(Employee empnew)
-          {
-              return dal.ChangeWorker(empnew);
-          }
+        public void ChangeWorker(Employee empnew)
+        {
+            dal.updateEmployee(empnew);
+        }
 
     }
 }

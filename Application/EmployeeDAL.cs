@@ -168,405 +168,358 @@ namespace Application
         //change password. return true if success
         public bool ChangePassword(int user, string oldpass, string newpass1, string newpass2)
         {
-            connect();
-            bool havenewpass = false;
-            string command;
-            SqlCeCommand com;
-      
-            command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
-
-            com = new SqlCeCommand(command, connection);
-
-            SqlCeDataReader data = com.ExecuteReader();
-
-            while (data.Read())
+            if (newpass1.Equals(newpass2))
             {
-                if (("" + data[2]).Equals(oldpass))
-                {
-                    if (newpass1.Equals(newpass2))
-                    {
-                        String sqlString = "UPDATE EmployeeData SET password= '" + newpass1 + "' WHERE id= '" + user + "';";
-                        SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                        com2.ExecuteNonQuery();
-                        havenewpass = true;
-                        break;
-                    }
-                 
-                }
+                connect();
+                String sqlString = "UPDATE EmployeeData SET password= '" + newpass1 + "' WHERE id= '" + user + "' AND BINARY password= '" + oldpass + "';";
+                SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+                int numberOfRecords = com.ExecuteNonQuery();
+                disconnect();
+
+                //is password changed?
+                if (numberOfRecords > 0)
+                    return true;
             }
-
-
-            disconnect();
-
-            return havenewpass;
+            return false;
         }
 
         //מחזיר את כל העובדים עם כל הנתונים שלהם שנמצאים עכשיו בעבודה
-    public LinkedList<Employee> GetAllEmployeeInWork()
-    {
-        LinkedList<Employee> employee = new LinkedList<Employee>();
-        DateTime time = DateTime.Now;
-        string dateoftime= time.ToString("MM/dd/yyyy");
-         string command;
-        connect();
+        public LinkedList<Employee> GetAllEmployeeInWork()
+        {
+            LinkedList<Employee> employee = new LinkedList<Employee>();
+            DateTime time = DateTime.Now;
+            string dateoftime= time.ToString("MM/dd/yyyy");
+            string command;
+            connect();
  
-        command = " SELECT  id, dateandtime"
-                + " FROM     EntryAndExit"
-                + " WHERE  (DATEDIFF(dd, dateandtime, '" + dateoftime + "') = 0) AND (inorout = 1) AND (id NOT IN"
+            //select all users that logged in but didn't logged out yet
+            command = " SELECT  ee.id, ed.firstname, ed.lastname, ed.rank, ed.wage, ed.minhours, ed.maxhours, ed.overtimeinday, ed.overtimeinmonth, ed.sick, ed.vacation, ed.timeheworkonmonth, ee.dateandtime"
+                + " FROM     EntryAndExit AS ee" 
+                + " INNER JOIN EmployeeData AS ed ON ee.id = ed.id"
+                + " WHERE  (DATEDIFF(dd, ee.dateandtime, '" + dateoftime + "') = 0) AND (ee.inorout = 1) AND (ee.id NOT IN"
                 + " (SELECT  id"
                 + " FROM     EntryAndExit"
                 + " WHERE  (DATEDIFF(dd, dateandtime, '" + dateoftime + "') = 0) AND (inorout = 0)))";
 
+        /*
+SELECT  ee.id, ed.firstname, ed.lastname, ed.rank, ed.wage, ed.minhours, ed.maxhours, ed.overtimeinday, ed.overtimeinmonth, ed.sick, ed.vacation, 
+               ed.timeheworkonmonth, ee.dateandtime
+FROM     EntryAndExit AS ee INNER JOIN
+               EmployeeData AS ed ON ee.id = ed.id
+WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (ee.id NOT IN
+                   (SELECT  id
+                    FROM     EntryAndExit
+                    WHERE  (DATEDIFF(dd, dateandtime, '08/14/13') = 0) AND (inorout = 0)))
+         */
 
-        SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
 
-        SqlCeDataReader data = com.ExecuteReader();
-
-
-        while (data.Read())
-        {
-
-           // int count = 0;
-           // count = time.Subtract(DateTime.Parse("" + data[1])).Hours;
-
-            int count = 0;
-            count = time.Subtract(DateTime.Parse("" + data[1])).Minutes;
-
-
-            String sqlString = "UPDATE EmployeeData SET timeheworkonday= '" + count + "' WHERE id= '" + int.Parse("" + data[0]) + "';";
-            SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-            com2.ExecuteNonQuery();
-
-            command = "SELECT * FROM EmployeeData WHERE id = '" + int.Parse("" + data[0]) + "';";
-            com = new SqlCeCommand(command, connection);
-
-            SqlCeDataReader data2 = com.ExecuteReader();
-            while (data2.Read())
+            while (data.Read())
             {
-                employee.AddLast(new Employee(int.Parse("" + data2[0]), "" + data2[1], "" + "" + data2[2], int.Parse("" + data2[4]), int.Parse("" + data2[5]), int.Parse("" + data2[6]), int.Parse("" + data2[7]), int.Parse("" + data2[8]), int.Parse("" + data2[9]), int.Parse("" + data2[10]), int.Parse("" + data2[11]), int.Parse("" + data2[12]), int.Parse("" + data2[13])));
+               // int count = 0;
+               // count = time.Subtract(DateTime.Parse("" + data[12])).Hours;
+                //ma ze???
+                int count = 0;
+                count = time.Subtract(DateTime.Parse("" + data[12])).Minutes;
+                //String sqlString = "UPDATE EmployeeData SET timeheworkonday= '" + count + "' WHERE id= '" + int.Parse("" + data[0]) + "';";
+                //SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
+                //com2.ExecuteNonQuery();
+
+                //add the user to list
+                employee.AddLast(
+                    new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[3]), int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), count, int.Parse("" + data[11]))
+                );
+
             }
+            disconnect();
+
+            return employee;
         }
-        disconnect();
-
-      
-        return employee;
-    }
 
 
-
-    public int Vacation(int user)
-    {
-        string command;
-        SqlCeCommand com;
-        int vac=0;
-        connect();
-
-        command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
-
-        com = new SqlCeCommand(command, connection);
-
-        SqlCeDataReader data = com.ExecuteReader();
-
-        while (data.Read())
+        //return all employees
+        public LinkedList<Employee> GetAllEmployee()
         {
-            vac = int.Parse(""+data[11]);
+            LinkedList<Employee> employee = new LinkedList<Employee>();
+
+            connect();
+            string command = "SELECT * FROM EmployeeData ORDER BY firstname ASC";
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            while (data.Read())
+            {
+                employee.AddLast(new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), int.Parse("" + data[12]), int.Parse("" + data[13])));
+            }
+            disconnect();
+
+            return employee;
         }
 
-        disconnect();
 
-        return vac ;
-    }
-
-
-
-
-
-    public int Sick(int user)
-    {
-        string command;
-        SqlCeCommand com;
-        int sic = 0;
-        connect();
-
-        command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
-
-        com = new SqlCeCommand(command, connection);
-
-        SqlCeDataReader data = com.ExecuteReader();
-
-        while (data.Read())
+        //return user vacations days left
+        public int Vacation(int user)
         {
-            sic = int.Parse("" + data[10]);
+            string command;
+            SqlCeCommand com;
+            int vac=0;
+            connect();
+
+            command = "SELECT vacation FROM EmployeeData WHERE id = '" + user + "';";
+            com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            while (data.Read())
+            {
+                vac = int.Parse(""+data[0]);
+            }
+            disconnect();
+
+            return vac ;
         }
 
-        disconnect();
 
-        return sic;
-    }
+        //return user sick days left
+        public int Sick(int user)
+        {
+            string command;
+            SqlCeCommand com;
+            int sic = 0;
+            connect();
+
+            command = "SELECT sick FROM EmployeeData WHERE id = '" + user + "';";
+            com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            while (data.Read())
+            {
+                sic = int.Parse("" + data[0]);
+            }
+            disconnect();
+
+            return sic;
+        }
+
+
+        //כמות שעות שהוא עבד בחודש
+        public int HoursWorkInMonth(int user)
+        {
+            connect();
+            string command = "SELECT timeheworkonmonth FROM EmployeeData WHERE id = '" + user + "';";
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            while (data.Read())
+            {
+                return int.Parse("" + data[0]);
+            }
+            disconnect();
+
+            return 0;
+        }
 
 
         //מחזירה את כמות השעות שכל העובדים עובדים כרגע
-    public int CountWorker(LinkedList<Employee> emp)
-    {
-        int sum = 0;
-
-        foreach (Employee i in emp)
+        public int CountWorker(LinkedList<Employee> emp)
         {
-            sum = i.Timeheworkonday;
+            int sum = 0;
+            foreach (Employee i in emp)
+            {
+                sum = i.Timeheworkonday;
+            }
+            return sum;
         }
 
 
-        return sum;
-    }
-
-
-
-       public LinkedList<Employee> GetAllEmployee()
+        //כמות שעות שהעובד עבד באותו יום
+        public int HoursWorkInDay(int user, DateTime date)
         {
-            LinkedList<Employee> employee = new LinkedList<Employee>();
-            
+            connect();
+            string command = "SELECT dateandtime FROM EntryAndExit WHERE id = '" + user + "' AND DateDiff(dd, dateandtime, '" + date + "') = 0";
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            int count = 0;
+            while (data.Read())
+            {
+                count = date.Subtract(DateTime.Parse("" + data[0])).Minutes;
+                return count;
+            }
+            disconnect();
+
+            return count;
+        }
+
+
+        //הודעה לא נקראה =0
+        //הודעה מאושרת עי המנהל =1
+        public LinkedList<Massege> GetMassege(int user)
+        {
+            LinkedList<Massege> mes = new LinkedList<Massege>();
 
             connect();
-            string command = "SELECT * FROM EmployeeData ";
+            string command = "SELECT r.idsender, r.idreceiver, r.type, r.note, r.approve, r.date, r.isread, e.firstname, e.lastname FROM RequestsAndComments AS r INNER JOIN EmployeeData AS e ON r.idsender=e.id WHERE r.idreceiver = '" + user + "' AND r.isread=0;";
 
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+            while (data.Read())
+            {
+                mes.AddLast(new Massege(int.Parse("" + data[0]), int.Parse("" + data[1]), int.Parse("" + data[2]), "" + data[3], int.Parse("" + data[4]),"" +data[5], int.Parse("" + data[6]), "" + data[7], "" + data[8]));
+            }
+            disconnect();
+
+            return mes;
+        }
+
+        
+        //add new message
+        public void SetMassege(Massege mes)
+        {
+            connect();
+            String sqlString = "INSERT INTO RequestsAndComments VALUES('" + mes.Idreceiver + "','" + mes.Idsender + "','" + mes.Type + "','" + mes.Note + "','" + mes.Approve + "','" + mes.Date + "','" + mes.Read + "');";
+            SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+            com.ExecuteNonQuery();
+            disconnect();
+        }
+
+
+        //mark message as been read
+        public void SetIsRead(int id)
+        {
+            connect();
+
+            String sqlString = "UPDATE RequestsAndComments SET isread= '" + 1 + "' WHERE id= '" + id + "';";
+            SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+            com.ExecuteNonQuery();
+
+            disconnect();
+        }
+        
+
+        private LinkedList<Report> ReportEntryAndExit(int user, DateTime date)
+        {
+            LinkedList<Report> rep = new LinkedList<Report>();
+
+            connect();
+            string command = "SELECT * FROM EntryAndExit WHERE id = '" + user + "' ORDER BY dateandtime ASC;";
+            SqlCeCommand com = new SqlCeCommand(command, connection);
+            SqlCeDataReader data = com.ExecuteReader();
+
+            while (data.Read())
+            {
+                if (date.ToString("MM").Equals(DateTime.Parse("" + data[1]).ToString("MM")))
+                {
+                    if (int.Parse("" + data[2]) == 1)
+                    {
+                        Report reports = new Report();
+                        reports.Date = DateTime.Parse("" + data[1]);
+                        if (int.Parse("" + data[2]) == 1)
+                            reports.Entry = DateTime.Parse("" + data[1]);
+                        if (int.Parse("" + data[2]) == 0)
+                            reports.Exit = DateTime.Parse("" + data[1]);
+                        rep.AddLast(reports);
+                    }
+                    else
+                    {
+                        foreach (Report i in rep)
+                        {
+                            if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[1]).ToString("dd")))
+                            {
+                                i.Date = DateTime.Parse("" + data[1]);
+                                if (int.Parse("" + data[2]) == 1)
+                                    i.Entry = DateTime.Parse("" + data[1]);
+                                if (int.Parse("" + data[2]) == 0)
+                                    i.Exit = DateTime.Parse("" + data[1]);
+
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+            disconnect();
+
+            return rep;
+        }
+
+
+        //ma kore kan???
+        private LinkedList<Report> ReportNote(LinkedList<Report> rep, int user)
+        {
+            return null;
+            /*
+            connect();
+            string command = "SELECT idsender, idreceiver, type, note, approve, CONVERT(datetime, date, 100) AS date, isread FROM RequestsAndComments WHERE idsender = '" + user + "' And approve = 1 ;";
             SqlCeCommand com = new SqlCeCommand(command, connection);
 
             SqlCeDataReader data = com.ExecuteReader();
 
             while (data.Read())
             {
-                employee.AddLast(new Employee(int.Parse("" + data[0]), "" + data[1], "" + "" + data[2], int.Parse("" + data[4]), int.Parse("" + data[5]), int.Parse("" + data[6]), int.Parse("" + data[7]), int.Parse("" + data[8]), int.Parse("" + data[9]), int.Parse("" + data[10]), int.Parse("" + data[11]), int.Parse("" + data[12]), int.Parse("" + data[13])));
+                if (int.Parse("" + data[2]) != 2)
+                {
+                    int x = 0;
+                    foreach (Report i in rep)
+                    {
+                        if (i.Date.ToString("MMMM").Equals(DateTime.Parse("" + data[5]).ToString("MMMM")))
+                        {
+                            if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[5]).ToString("dd")))
+                            {
+                                x = 1;
+                                i.Type = int.Parse("" + data[2]);
+                                i.Note = "" + data[3];
+                                break;
+                            }
+                            else
+                            {
+                                if (x == 0)
+                                {
+
+                                    Report reports = new Report();
+                                    reports.Date = DateTime.Parse("" + data[1]);
+                                    rep.AddLast(reports);
+
+                                }
+                                x = 0;
+                            }
+                        }
+                    }
+
+                }
+            }
+            disconnect();
+            return rep;
+            */
+        }
+
+        private LinkedList<Report> ReportHours(LinkedList<Report> rep, int user)
+        {
+            foreach (Report i in rep)
+            {
+                int time2 = (int)i.Exit.Subtract(i.Entry).TotalMinutes;
+                int consttime = Timeinday * 60;
+                if (time2 > consttime)
+                {
+                    i.Excesshours = (time2 - consttime);
+                    i.Lackhours = 0;
+                    i.Hours = time2;
+                }
+                else
+                {
+                    i.Excesshours = 0;
+                    i.Lackhours = (consttime - time2);
+                    i.Hours = time2;
+                }
             }
 
-            disconnect();
-
-
-
-            return employee;
+            return rep;
         }
 
 
-
-//כמות שעות שהעובד עבד באותו יום
-       public int HoursWorkInDay(int user, DateTime date)
-       {
-        
-           connect();
-           
-          string command = "SELECT * FROM EntryAndExit e1 WHERE  id = '" + user + "' AND  DateDiff(dd, e1.dateandtime, '" + date + "') = 0";
-
-           SqlCeCommand com = new SqlCeCommand(command, connection);
-           SqlCeDataReader data = com.ExecuteReader();
-
-           int count = 0;
-           while (data.Read())
-           {
-               count = date.Subtract(DateTime.Parse("" + data[14])).Minutes;
-               return count;
-           }
-
-           disconnect();
-
-
-           return count;
-
-       }
-        //כמות שעות שהוא עבד בחודש
-       public int HoursWorkInMonth(int user)
-       {
-           connect();
-           string command = "SELECT * FROM EmployeeData WHERE id = '" + user + "';";
-
-           SqlCeCommand com = new SqlCeCommand(command, connection);
-
-           SqlCeDataReader data = com.ExecuteReader();
-
-           while (data.Read())
-           {
-               return int.Parse(""+data[13]);
-           }
-
-           disconnect();
-
-           return 0;
-       }
-
-        //הודעה לא נקראה =0
-        //הודעה מאושרת עי המנהל =1
-       public LinkedList<Massege> GetMassege(int user)
-       {
-           LinkedList<Massege> mes = new LinkedList<Massege>();
-
-           connect();
-           string command = "SELECT r.idsender, r.idreceiver, r.type, r.note, r.approve, r.date, r.isread, e.firstname, e.lastname FROM RequestsAndComments AS r INNER JOIN EmployeeData AS e ON r.idsender=e.id WHERE r.idreceiver = '" + user + "' AND r.isread=0;";
-
-           SqlCeCommand com = new SqlCeCommand(command, connection);
-
-           SqlCeDataReader data = com.ExecuteReader();
-
-           while (data.Read())
-           {
-               mes.AddLast(new Massege(int.Parse("" + data[0]), int.Parse("" + data[1]), int.Parse("" + data[2]), "" + data[3], int.Parse("" + data[4]),"" +data[5], int.Parse("" + data[6]), "" + data[7], "" + data[8]));
-           }
-
-           disconnect();
-
-           return mes;
-
-       }
-
-
-
-       public void SetMassege(Massege mes)
-       {
-           connect();
-           String sqlString = "INSERT INTO RequestsAndComments VALUES('" + mes.Idreceiver + "','" + mes.Idsender + "','" + mes.Type + "','" + mes.Note + "','" + mes.Approve + "','" + mes.Date + "','" + mes.Read + "');";
-           SqlCeCommand com = new SqlCeCommand(sqlString, connection);
-           com.ExecuteNonQuery();
-           disconnect();
-       }
-
-
-       public void SetIsRead(int id)
-       {
-           connect();
-
-           String sqlString = "UPDATE RequestsAndComments SET isread= '" + 1 + "' WHERE id= '" + id + "';";
-           SqlCeCommand com = new SqlCeCommand(sqlString, connection);
-           com.ExecuteNonQuery();
-
-           disconnect();
-
-          
-       }
-        
-
-       private LinkedList<Report> ReportEntryAndExit(int user, DateTime date)
-       {
-           LinkedList<Report> rep = new LinkedList<Report>();
-
-           connect();
-           string command = "SELECT * FROM EntryAndExit WHERE id = '" + user + "' ORDER BY dateandtime ASC;";
-
-           SqlCeCommand com = new SqlCeCommand(command, connection);
-
-           SqlCeDataReader data = com.ExecuteReader();
-
-           while (data.Read())
-           {
-               if (date.ToString("MM").Equals(DateTime.Parse("" + data[1]).ToString("MM")))
-               {
-                   if (int.Parse("" + data[2]) == 1)
-                   {
-                       Report reports = new Report();
-                       reports.Date = DateTime.Parse("" + data[1]);
-                       if (int.Parse("" + data[2]) == 1)
-                           reports.Entry = DateTime.Parse("" + data[1]);
-                       if (int.Parse("" + data[2]) == 0)
-                           reports.Exit = DateTime.Parse("" + data[1]);
-                       rep.AddLast(reports);
-                   }
-                   else
-                   {
-                       foreach (Report i in rep)
-                       {
-                           if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[1]).ToString("dd")))
-                           {
-                               i.Date = DateTime.Parse("" + data[1]);
-                               if (int.Parse("" + data[2]) == 1)
-                                   i.Entry = DateTime.Parse("" + data[1]);
-                               if (int.Parse("" + data[2]) == 0)
-                                   i.Exit = DateTime.Parse("" + data[1]);
-
-                               break;
-                           }
-                       }
-
-                   }
-               }
-           }
-
-           disconnect();
-
-           return rep;
-       }
-
-       private LinkedList<Report> ReportNote(LinkedList<Report> rep, int user)
-       {
-           connect();
-           string command = "SELECT idsender, idreceiver, type, note, approve, CONVERT(datetime, date, 100) AS date, isread FROM RequestsAndComments WHERE idsender = '" + user + "' And approve = 1 ;";
-           SqlCeCommand com = new SqlCeCommand(command, connection);
-
-           SqlCeDataReader data = com.ExecuteReader();
-
-           while (data.Read())
-           {
-               if (int.Parse("" + data[2]) != 2)
-               {
-                   int x = 0;
-                   foreach (Report i in rep)
-                   {
-                       if (i.Date.ToString("MMMM").Equals(DateTime.Parse("" + data[5]).ToString("MMMM")))
-                       {
-                           if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[5]).ToString("dd")))
-                           {
-                               x = 1;
-                               i.Type = int.Parse("" + data[2]);
-                               i.Note = "" + data[3];
-                               break;
-                           }
-                           else
-                           {
-                               if (x == 0)
-                               {
-
-                                   Report reports = new Report();
-                                   reports.Date = DateTime.Parse("" + data[1]);
-                                   rep.AddLast(reports);
-
-                               }
-                               x = 0;
-                           }
-                       }
-                   }
-
-               }
-           }
-           disconnect();
-           return rep;
-       }
-
-       private LinkedList<Report> ReportHours(LinkedList<Report> rep, int user)
-       {
-           foreach (Report i in rep)
-           {
-               int time2 = (int)i.Exit.Subtract(i.Entry).TotalMinutes;
-               int consttime = Timeinday * 60;
-               if (time2 > consttime)
-               {
-                   i.Excesshours = (time2 - consttime);
-                   i.Lackhours = 0;
-                   i.Hours = time2;
-               }
-               else
-               {
-                   i.Excesshours = 0;
-                   i.Lackhours = (consttime - time2);
-                   i.Hours = time2;
-               }
-           }
-
-           return rep;
-       }
-
-
-       public LinkedList<Report> Reports(int user, DateTime date)
-       {
-           LinkedList<Report> rep = ReportEntryAndExit(user, date);
-           rep = ReportNote(rep, user);
-           rep = ReportHours(rep, user);
-           return rep;
-       }
+        public LinkedList<Report> Reports(int user, DateTime date)
+        {
+            LinkedList<Report> rep = ReportEntryAndExit(user, date);
+            rep = ReportNote(rep, user);
+            rep = ReportHours(rep, user);
+            return rep;
+        }
 
 
         //Notes reason dictionery
@@ -582,6 +535,7 @@ namespace Application
                 default: return ""; //-1
             }
         }
+
 
        //update employee info
        public void updateEmployee(Employee empnew)
@@ -670,7 +624,5 @@ namespace Application
                 disconnect();
             }
        }
-
-
     }
 }
