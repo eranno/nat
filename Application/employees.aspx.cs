@@ -35,10 +35,10 @@ namespace Application
                 TableCell tCell3 = new TableCell();
                 TableCell tCell4 = new TableCell();
 
-                tCell1.Text = ""+emp.Id;
+                tCell1.Text = "<a href=\"main.aspx?id=" + emp.Id + "\">" + emp.Id + "</a>";
                 tCell2.Text = emp.FirstName;
                 tCell3.Text = emp.LastName;
-                tCell4.Text = ""+emp.Rank;
+                tCell4.Text = "" + emp.Rank;
 
                 tRow.Cells.Add(tCell1);
                 tRow.Cells.Add(tCell2);
@@ -59,7 +59,7 @@ namespace Application
                 TableCell tCell4 = new TableCell();
                 TableCell tCell5 = new TableCell();
 
-                tCell1.Text = "" + emp.Id;
+                tCell1.Text = "<a href=\"main.aspx?id=" + emp.Id + "\">" + emp.Id + "</a>";
                 tCell2.Text = emp.FirstName;
                 tCell3.Text = emp.LastName;
                 tCell4.Text = "" + emp.Rank;
@@ -79,19 +79,19 @@ namespace Application
         protected void button_Click4(object sender, EventArgs e)
         {
             //validate info
-            int id                  = int.Parse(new_id.Text);
-            string firstName        = new_first.Text;
-            string lastName         = new_last.Text;
-            int rank                = int.Parse(new_rank.Text);
-            int wage                = int.Parse(new_wage.Text);
-            int minhours            = int.Parse(new_minhours.Text);
-            int maxhours            = int.Parse(new_maxhours.Text);
-            int overtimeinday       = int.Parse(new_overtimeinday.Text);
-            int overtimeinmonth     = int.Parse(new_overtimeinmonth.Text);
-            int sick                = int.Parse(new_sick.Text);
-            int vacation            = int.Parse(new_vacation.Text);
-            int timeheworkonday     = int.Parse(new_timeheworkonday.Text);
-            int timeheworkonmonth   = int.Parse(new_timeheworkonmonth.Text);
+            int id = int.Parse(new_id.Text);
+            string firstName = new_first.Text;
+            string lastName = new_last.Text;
+            int rank = int.Parse(new_rank.Text);
+            int wage = int.Parse(new_wage.Text);
+            int minhours = int.Parse(new_minhours.Text);
+            int maxhours = int.Parse(new_maxhours.Text);
+            int overtimeinday = int.Parse(new_overtimeinday.Text);
+            int overtimeinmonth = int.Parse(new_overtimeinmonth.Text);
+            int sick = int.Parse(new_sick.Text);
+            int vacation = int.Parse(new_vacation.Text);
+            int timeheworkonday = int.Parse(new_timeheworkonday.Text);
+            int timeheworkonmonth = int.Parse(new_timeheworkonmonth.Text);
 
             //add new employee
             Employee employee = new Employee(
@@ -146,7 +146,7 @@ namespace Application
             }
             else
             {
-                Response.Redirect("main.aspx?id="+emp.Id);
+                Response.Redirect("main.aspx?id=" + emp.Id);
             }
         }
     }

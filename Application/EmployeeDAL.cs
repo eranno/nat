@@ -12,12 +12,13 @@ namespace Application
         private SqlCeConnection connection;
         private const int Timeinday = 8;
         //private const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
-        public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
+        //public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
         LinkedList<Report> rep;
 
         public void connect()
         {
-            connection = new SqlCeConnection("Data Source=" + DB_SOURCE);
+            //connection = new SqlCeConnection("Data Source=" + DB_SOURCE);
+            connection = new SqlCeConnection("Data Source=" + System.Web.HttpContext.Current.Server.MapPath("~/App_Data/Database.sdf"));
             connection.Open();
         }
 

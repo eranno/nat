@@ -8,6 +8,7 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
+    <!-- header -->
     <div class="frame header">
         <div class="left">
             <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
@@ -19,30 +20,27 @@
         </div>
     </div>
 
-    <asp:Panel ID="admin" runat="server">
-        <div id="view" class="frame" runat="server" visible="true">
+    <asp:Panel ID="showUserDetails" runat="server">
+        <div id="view" class="frame" runat="server" visible="true" style="background-color:#e8ffaf">
+            <img id="search" src="pic/man1.png" style="width:150px;height:150px;" />
+            <h3>פרטי העובד:</h3>
         </div>
     </asp:Panel>
 
-    <!--
-    <div class="frame">
-        <asp:Table ID="Table1" GridLines="Both" runat="server">
-        </asp:Table>
+    <div id="links" class="frame" runat="server">
+        <a href="vacations.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">חופשות</a>
+        <a href="sick.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">ימי מחלה</a>
+        <a href="clockReport.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">דו"ח שעות</a>
+        <a href="messages.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">הודעות[<asp:Label ID="msgs" runat="server"></asp:Label>]</a>
     </div>
-    -->
-    <div class="frame">
-        <a href="vacations.aspx" class="button">חופשות</a>
-        <a class="button">ימי מחלה</a>
-        <a href="clockReport.aspx" class="button">דו"ח שעות</a>
-        <a href="messages.aspx" class="button">הודעות[<asp:Label ID="msgs" runat="server"></asp:Label>]</a>
-    </div>
-    <asp:Panel runat="server">
+    <asp:Panel ID="Panel1" runat="server">
         <div id="Div1" class="frame" runat="server" visible="true">
             <span>ניהול:</span>
             <a href="employees.aspx" class="button" style="margin-right:-3px;">עובדים</a>
         </div>
     </asp:Panel>
 
+    <!-- footer -->
     <div class="frame footer"></div>
 </body>
 </html>

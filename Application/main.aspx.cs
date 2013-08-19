@@ -11,7 +11,7 @@ namespace Application
     {
         private EmployeeBL bl;
         private Employee employee;
-        //private Employee admin;
+        private Employee watchEmployee;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -19,58 +19,44 @@ namespace Application
             if (Session["id"] == null)
                 Response.Redirect("index.aspx");
 
+            //reset
+            showUserDetails.Visible = false;
+            Div1.Visible = false;
+
+
             //get user details
             bl = new EmployeeBL();
-            if (Request.QueryString["id"] != null) {
-                //admin = bl.GetEmployeeId(int.Parse("" + Session["id"]));
-                employee = bl.GetEmployeeId(int.Parse("" + Request.QueryString["id"]));
+            employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
+
+            //if admin
+            if (employee.Rank == 1)
+            {
+                //watch employee
+                if (Request.QueryString["id"] != null)
+                {
+                    watchEmployee = bl.GetEmployeeId(int.Parse("" + Request.QueryString["id"]));
+                    showUserDetails.Visible = true;
+                    view.InnerHtml += "תעודת זהות: " + watchEmployee.Id
+                                  + "<br />שם פרטי: " + watchEmployee.FirstName                                   
+                                  + "<br />שם משפחה: " + watchEmployee.LastName
+                                  + "<br />דרגה: " + watchEmployee.Rank
+                                  + "<br />ימי מחלה: " + watchEmployee.Sick
+                                  + "<br />ימי חופשה: " + watchEmployee.Vacation;
+
+                    links.Style.Add("background-color", "#e8ffaf");
+                }
+
+                //show admin extra info
+                Div1.Visible = true;
             }
-            else {
-                employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
-            }
+
+            //msgs
+            LinkedList<Massege> msgList = bl.GetMassege(int.Parse("" + Session["id"]));
+            msgs.Text = "" + msgList.Count;
 
             //user info
             last.Text = employee.LastName;
             first.Text = employee.FirstName;
-
-            //msgs
-            LinkedList<Massege> msgList = bl.GetMassege(int.Parse("" + Session["id"]));
-            msgs.Text = ""+msgList.Count;
-            /* show msgs?
-            foreach (Massege m in msgList)
-            {
-                TableRow tRow = new TableRow();
-                TableCell tCell1 = new TableCell();
-                TableCell tCell2 = new TableCell();
-                TableCell tCell3 = new TableCell();
-
-                tCell1.Text = "" + m.Date;
-                tCell2.Text = "" + m.FirstName + " " + m.LastName;
-                tCell3.Text = "" + m.Type;
-
-                tRow.Cells.Add(tCell1);
-                tRow.Cells.Add(tCell2);
-                tRow.Cells.Add(tCell3);
-                Table1.Rows.Add(tRow);
-            }
-             */
-
-
-            //Admin
-            if (employee.Rank == 1) {
-
-                //view user details
-                //admin.Visible = true;
-                //view.InnerText = "אתה מחוב";
-
-                //show admin extra info
-                //Div1.Visible = true;
-            }
-
-            else {
-                //admin.Visible = false;
-                //Div1.Visible = false;
-            }
 
         }
     }

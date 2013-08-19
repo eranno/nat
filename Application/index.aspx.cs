@@ -13,8 +13,8 @@ namespace Application
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Session["id"] = 55555;
-            Response.Redirect("clockReport.aspx");
+            //Session["id"] = 55555;
+            //Response.Redirect("clockReport.aspx");
 
             if (Session["id"] != null)
             {

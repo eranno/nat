@@ -72,6 +72,7 @@
     <Content Include="main.aspx" />
     <Content Include="main.css" />
     <Content Include="messages.aspx" />
+    <Content Include="sick.aspx" />
     <Content Include="vacations.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -131,6 +132,13 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report.cs" />
+    <Compile Include="sick.aspx.cs">
+      <DependentUpon>sick.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sick.aspx.designer.cs">
+      <DependentUpon>sick.aspx</DependentUpon>
+    </Compile>
     <Compile Include="vacations.aspx.cs">
       <DependentUpon>vacations.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

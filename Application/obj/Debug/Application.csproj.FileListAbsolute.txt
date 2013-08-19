@@ -8,3 +8,8 @@ G:\Application\Application\bin\Application.pdb
 G:\Application\Application\obj\Debug\Application.csprojResolveAssemblyReference.cache
 G:\Application\Application\obj\Debug\Application.dll
 G:\Application\Application\obj\Debug\Application.pdb
+E:\Application\Application\bin\Application.dll
+E:\Application\Application\bin\Application.pdb
+E:\Application\Application\obj\Debug\Application.csprojResolveAssemblyReference.cache
+E:\Application\Application\obj\Debug\Application.dll
+E:\Application\Application\obj\Debug\Application.pdb

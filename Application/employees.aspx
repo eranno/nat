@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <asp:Panel>
+    <asp:Panel ID="Panel1" runat="server">
         <div id="msgs" runat="server" class="frame" visible="false"></div>
     </asp:Panel>
 

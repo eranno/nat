@@ -40,13 +40,13 @@ namespace Application {
         protected global::System.Web.UI.WebControls.Label last;
         
         /// <summary>
-        /// admin control.
+        /// showUserDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel admin;
+        protected global::System.Web.UI.WebControls.Panel showUserDetails;
         
         /// <summary>
         /// view control.
@@ -58,13 +58,13 @@ namespace Application {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl view;
         
         /// <summary>
-        /// Table1 control.
+        /// links control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Table Table1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl links;
         
         /// <summary>
         /// msgs control.
@@ -74,6 +74,15 @@ namespace Application {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label msgs;
+        
+        /// <summary>
+        /// Panel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel1;
         
         /// <summary>
         /// Div1 control.
