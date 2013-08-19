@@ -11,7 +11,7 @@ namespace Application
     {
         private EmployeeBL bl;
         private Employee employee;
-        private Employee admin;
+        //private Employee admin;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,7 +22,7 @@ namespace Application
             //get user details
             bl = new EmployeeBL();
             if (Request.QueryString["id"] != null) {
-                admin = bl.GetEmployeeId(int.Parse("" + Session["id"]));
+                //admin = bl.GetEmployeeId(int.Parse("" + Session["id"]));
                 employee = bl.GetEmployeeId(int.Parse("" + Request.QueryString["id"]));
             }
             else {
@@ -60,16 +60,16 @@ namespace Application
             if (employee.Rank == 1) {
 
                 //view user details
-                admin.Visible = true;
-                view.InnerText = "אתה מחוב"
+                //admin.Visible = true;
+                //view.InnerText = "אתה מחוב";
 
                 //show admin extra info
-                Div1.Visible = true;
+                //Div1.Visible = true;
             }
 
             else {
-                admin.Visible = false;
-                Div1.Visible = false;
+                //admin.Visible = false;
+                //Div1.Visible = false;
             }
 
         }

@@ -11,8 +11,9 @@ namespace Application
     {
         private SqlCeConnection connection;
         private const int Timeinday = 8;
-        private const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
-        //public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
+        //private const string DB_SOURCE = @"G:\Application\Application\App_Data\Database.sdf";
+        public const string DB_SOURCE = @"C:\Users\natali moshe\Desktop\pro\Application\Application\App_Data\Database.sdf";
+        LinkedList<Report> rep;
 
         public void connect()
         {
@@ -392,10 +393,9 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
         }
         
 
-        private LinkedList<Report> ReportEntryAndExit(int user, DateTime date)
+        private void ReportEntryAndExit(int user, DateTime date)
         {
-            LinkedList<Report> rep = new LinkedList<Report>();
-
+           
             connect();
             string command = "SELECT * FROM EntryAndExit WHERE id = '" + user + "' ORDER BY dateandtime ASC;";
             SqlCeCommand com = new SqlCeCommand(command, connection);
@@ -436,60 +436,90 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
             }
             disconnect();
 
-            return rep;
+            return;
         }
 
 
-        //ma kore kan???
-        private LinkedList<Report> ReportNote(LinkedList<Report> rep, int user)
+    
+        private void ReportNote( int user)
         {
-            return null;
-            /*
             connect();
-            string command = "SELECT idsender, idreceiver, type, note, approve, CONVERT(datetime, date, 100) AS date, isread FROM RequestsAndComments WHERE idsender = '" + user + "' And approve = 1 ;";
+            string command = "SELECT idsender, idreceiver, type, note, approve, date, isread FROM RequestsAndComments WHERE idsender = '" + user + "' And approve = 1 ;";
             SqlCeCommand com = new SqlCeCommand(command, connection);
 
             SqlCeDataReader data = com.ExecuteReader();
 
+            LinkedList<Report> rep2 = new LinkedList<Report>();
+
             while (data.Read())
-            {
-                if (int.Parse("" + data[2]) != 2)
+            {//CONVERT(datetime, date, 100) AS 
+                if (int.Parse("" + data[2]) != 5)
                 {
-                    int x = 0;
+                    //int x = 0;
                     foreach (Report i in rep)
                     {
-                        if (i.Date.ToString("MMMM").Equals(DateTime.Parse("" + data[5]).ToString("MMMM")))
+                       if(i.Date.Year.ToString().Equals(DateTime.Parse("" + data[5]).Year.ToString()))
+                       {
+
+                        if (i.Date.Month.ToString().Equals(DateTime.Parse("" + data[5]).Month.ToString()))
                         {
-                            if (i.Date.ToString("dd").Equals(DateTime.Parse("" + data[5]).ToString("dd")))
+                         
+                            if (i.Date.Day.ToString().Equals(DateTime.Parse("" + data[5]).Day.ToString()))
                             {
-                                x = 1;
+                              //  x = 1;
                                 i.Type = int.Parse("" + data[2]);
-                                i.Note = "" + data[3];
+                                i.Note = ("" + data[3]);
                                 break;
                             }
                             else
                             {
-                                if (x == 0)
-                                {
-
+                              
                                     Report reports = new Report();
-                                    reports.Date = DateTime.Parse("" + data[1]);
-                                    rep.AddLast(reports);
+                                    reports.Date = DateTime.Parse("" + data[5]);
+                                    reports.Type = int.Parse("" + data[2]);
+                                    reports.Note = "" + data[3];
+                                    rep2.AddLast(reports);
+                                    break;
 
-                                }
-                                x = 0;
                             }
                         }
                     }
-
+                    }
                 }
             }
+
+
             disconnect();
-            return rep;
-            */
+            LinkedListNode<Report> node=null;
+            foreach (Report i in rep2)
+            {
+                foreach (Report j in rep)
+                {   
+                    if (i.Date.Day.CompareTo(j.Date.Day) < 0)
+                    {
+                        node = rep.Find(j);
+                        break;
+                    }
+                }
+
+                if (node != null)
+                {
+                    rep.AddBefore(node,i);
+                    node=null;
+                }
+                else
+                {
+                    rep.AddLast(i);
+                    node=null;
+                }
+
+            }
+
+
+            return;
         }
 
-        private LinkedList<Report> ReportHours(LinkedList<Report> rep, int user)
+        private void ReportHours( int user)
         {
             foreach (Report i in rep)
             {
@@ -509,15 +539,114 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
                 }
             }
 
-            return rep;
+            return;
         }
+
+
+
+
+
+        private void ReporDate(int user,DateTime date)
+        {
+         
+            LinkedList<Report> rep2 = new LinkedList<Report>();
+           
+            int k=1;
+
+            int sumday = DateTime.DaysInMonth(date.Date.Year, date.Date.Month);
+            int year = date.Date.Year;
+            int month = date.Date.Month;
+
+            DateTime new2 = new DateTime(year,month, k);
+
+            foreach (Report i in rep)
+            {
+
+                   while (true)
+                    {
+
+                        if (k == sumday)
+                            break;
+
+                       if(i.Date.Day== new2.Date.Day)
+                        {
+                            k++;
+                            new2 = new DateTime(year, month, k);
+                            break;
+                        }
+                        else
+                        {
+
+                            Report reports = new Report();
+                            reports.Date = new2;
+                            rep2.AddLast(reports);
+
+                            k++;
+                            new2 = new DateTime(year, month, k);
+                        }
+
+                  }              
+            }
+
+
+            while(true)
+            {
+                if (k < sumday)
+                {
+                    Report reports = new Report();
+                    reports.Date = new2;
+                    rep2.AddLast(reports);
+                    k++;
+                    new2 = new DateTime(year, month, k);
+                }
+                else
+                    break;
+            }
+           
+
+            LinkedListNode<Report> node = null;
+            foreach (Report i in rep2)
+            {
+                foreach (Report j in rep)
+                {
+                    if (i.Date.Day<j.Date.Day)
+                    {
+                        node = rep.Find(j);
+                        break;
+                    }
+                }
+
+                if (node != null)
+                { 
+                    rep.AddBefore(node, i);
+                    node = null;
+                }
+                else
+                {
+                    rep.AddLast(i);
+                    node = null;
+                }
+
+            }
+
+
+            return;
+        }
+
+
+
+
+
+
 
 
         public LinkedList<Report> Reports(int user, DateTime date)
         {
-            LinkedList<Report> rep = ReportEntryAndExit(user, date);
-            rep = ReportNote(rep, user);
-            rep = ReportHours(rep, user);
+            rep = new LinkedList<Report>();
+            ReportEntryAndExit(user, date);
+            ReportNote(user);
+            ReportHours(user);
+            ReporDate(user,date);
             return rep;
         }
 
@@ -624,5 +753,21 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
                 disconnect();
             }
        }
+
+
+
+       public bool Overtimeinday(Employee emp)
+       {
+
+           return false;
+       }
+
+       public bool Overtimeinmonth(Employee emp)
+       {
+
+           return false;
+       }
+
+
     }
 }
