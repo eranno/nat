@@ -554,63 +554,63 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
             if (!empnew.LastName.Equals(""))
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET lastname= '" + empnew.LastName;
+                sqlString += "lastname= '" + empnew.LastName;
                 exc = true;
             }
 
             if (empnew.Rank != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET rank= '" + empnew.Rank;
+                sqlString += "rank= '" + empnew.Rank;
                 exc = true;
             }
 
             if (empnew.Wage != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET wage= '" + empnew.Wage;
+                sqlString += "wage= '" + empnew.Wage;
                 exc = true;
             }
 
             if (empnew.Minhours != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET minhours= '" + empnew.Minhours;
+                sqlString += "minhours= '" + empnew.Minhours;
                 exc = true;
             }
 
             if (empnew.Maxhours != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET maxhours= '" + empnew.Maxhours;
+                sqlString += "maxhours= '" + empnew.Maxhours;
                 exc = true;
             }
 
             if (empnew.Overtimeinday != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET overtimeinday= '" + empnew.Overtimeinday;
+                sqlString += "overtimeinday= '" + empnew.Overtimeinday;
                 exc = true;
             }
 
             if (empnew.Overtimeinmonth != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET overtimeinmonth= '" + empnew.Overtimeinmonth;
+                sqlString += "overtimeinmonth= '" + empnew.Overtimeinmonth;
                 exc = true;
             }
 
             if (empnew.Sick != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET sick= '" + empnew.Sick;
+                sqlString += "sick= '" + empnew.Sick;
                 exc = true;
             }
 
             if (empnew.Vacation != -1)
             {
                 if (exc) sqlString += " AND ";
-                sqlString += "UPDATE EmployeeData SET vacation= '" + empnew.Vacation;
+                sqlString += "vacation= '" + empnew.Vacation;
                 exc = true;
             }
 
