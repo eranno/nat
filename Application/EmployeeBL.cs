@@ -126,10 +126,13 @@ namespace Application
          * 4=job
          * 5=vacation request
          */
-        public void SetMassege(int idreceiver, int idsender, int type, string note)
+        public void SetMassege(int idreceiver, int idsender, int type, string note, string dateoftime)
         {
-            DateTime date = DateTime.Now;
-            string dateoftime = date.ToString("MM/dd/yyyy");
+            if (dateoftime == "")
+            {
+                DateTime date = DateTime.Now;
+                dateoftime = date.ToString("MM/dd/yyyy");
+            }
             Massege mes = new Massege(idreceiver, idsender, type, note, 0, dateoftime, 0);
            dal.SetMassege(mes);
            return;
