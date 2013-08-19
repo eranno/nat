@@ -143,10 +143,7 @@ namespace Application
               dal.SetIsRead(id);
            }
           
-          public LinkedList<Report> Reports(int user, DateTime date)
-           {
-               return dal.Reports(user, date);
-           }
+      
 
 
           public string Type(int x)
@@ -155,10 +152,59 @@ namespace Application
           }
 
 
-        public void ChangeWorker(Employee empnew)
+
+        //*************************************
+
+        public LinkedList<Report> Reports(int user, DateTime date)
         {
-            dal.updateEmployee(empnew);
+            return dal.Reports(user,date);
         }
+
+
+
+
+        //update employee info
+        public void UpdateEmployee(Employee empnew)
+        {
+            dal.UpdateEmployee(empnew);
+        }
+
+
+        //type=1=sick, type=2=vaction
+        public int[] SickVactionMonth(int id, int year, int type)
+        {
+            return dal.SickVactionMonth(id, year, type);
+        }
+
+
+        //if type=1 =sick, if type=2=vaction
+        public int[] Sum(int id, int type, int year)
+        {
+            return dal.Sum(id,type,year);//in 1: place =all
+            //2= day uses, 3: if he over
+        }
+
+
+
+        //if message approve
+        public void MenApprove(int id)
+        {
+
+            dal.MenApprove(id);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

@@ -23,12 +23,14 @@
 
     <div class="frame">
         <h3>מאזן חופשות</h3>
-        <span>יתרה: <asp:Label ID="totalSum" runat="server"></asp:Label></span>
+        <span>שנתי: <asp:Label ID="totalSum" runat="server"></asp:Label></span>
+         <span>יתרה: <asp:Label ID="havesum" runat="server"></asp:Label></span>
+         <span>חריגה: <asp:Label ID="lass" runat="server"></asp:Label></span>
+         <span>השתמשת: <asp:Label ID="use" runat="server"></asp:Label></span>
         <asp:Table ID="Table1" GridLines="Both" runat="server">
             <asp:TableHeaderRow>
                 <asp:TableHeaderCell>חודש</asp:TableHeaderCell>
                 <asp:TableHeaderCell>מספר ימי חופשה</asp:TableHeaderCell>
-                <asp:TableHeaderCell>תאריך תחילת חופשה</asp:TableHeaderCell>
             </asp:TableHeaderRow>
         </asp:Table>
     </div>

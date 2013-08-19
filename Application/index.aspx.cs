@@ -19,8 +19,11 @@ namespace Application
             if (Session["id"] != null)
             {
                 if (Request.QueryString["r"] == "outoftime")
-                id.Text = "" + Session["id"];
-                Session["id"] = null;
+                {
+                    id.Text = "" + Session["id"];
+                    Session["id"] = null;
+                }
+                else Response.Redirect("main.aspx");
             }
         }
 

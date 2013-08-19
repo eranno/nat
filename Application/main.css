@@ -53,6 +53,9 @@ a.button:link, a.button:visited, a.button:hover, a.button:active {
 th {
     width:200px;
 }
+td {
+    text-align:center;
+}
 .title {
     cursor: pointer;
 }
@@ -80,4 +83,8 @@ form span {
 
 #search {
 float:left;
+}
+
+.admin {
+    background-color:#e8ffaf;
 }

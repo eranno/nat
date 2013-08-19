@@ -22,7 +22,30 @@ namespace Application
             //user info
             last.Text = employee.LastName;
             first.Text = employee.FirstName;
-            totalSum.Text = "" + employee.Vacation;
+
+            int year = 2013;
+            int[] array = bl.SickVactionMonth(int.Parse("" + Session["id"]),year,1);
+            int[] arraysum = bl.Sum(int.Parse("" + Session["id"]),1, year);
+            totalSum.Text = "" + arraysum[0];
+            havesum.Text = "" + arraysum[3];
+            lass.Text = "" + arraysum[2];
+            use.Text = "" + arraysum[1];
+               for(int i=0; i<array.Length;i++)
+               {
+                TableRow tRow = new TableRow();
+                TableCell tCell1 = new TableCell();
+                TableCell tCell2 = new TableCell();
+                int x=i+1;
+            
+                string str = x.ToString() +"/"+ year.ToString();
+                tCell1.Text = str;
+                tCell2.Text = array[i].ToString();
+
+
+                tRow.Cells.Add(tCell1);
+                tRow.Cells.Add(tCell2);
+                Table1.Rows.Add(tRow);
+             }
         }
 
         protected void button_Click(object sender, EventArgs e)
@@ -36,7 +59,7 @@ namespace Application
             }
 
 
-            bl.SetMassege(1, int.Parse("" + Session["id"]), 2, start.Text + "," + end.Text);
+           // bl.SetMassege(1, int.Parse("" + Session["id"]), 2, start.Text + "," + end.Text);
 
 
         }

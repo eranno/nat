@@ -43,6 +43,7 @@ namespace Application
                     + " EntryAndExit AS ee ON ed.id = ee.id AND ee.inorout = "+inorout+" AND DATEDIFF(dd, ee.dateandtime, '" + date.ToString(format) + "') = 0"
                     + " WHERE  (ed.id = '"+user+"')";
 
+
             com = new SqlCeCommand(command, connection);
 
             SqlCeDataReader data = com.ExecuteReader();
@@ -203,30 +204,15 @@ namespace Application
                 + " FROM     EntryAndExit"
                 + " WHERE  (DATEDIFF(dd, dateandtime, '" + dateoftime + "') = 0) AND (inorout = 0)))";
 
-        /*
-SELECT  ee.id, ed.firstname, ed.lastname, ed.rank, ed.wage, ed.minhours, ed.maxhours, ed.overtimeinday, ed.overtimeinmonth, ed.sick, ed.vacation, 
-               ed.timeheworkonmonth, ee.dateandtime
-FROM     EntryAndExit AS ee INNER JOIN
-               EmployeeData AS ed ON ee.id = ed.id
-WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (ee.id NOT IN
-                   (SELECT  id
-                    FROM     EntryAndExit
-                    WHERE  (DATEDIFF(dd, dateandtime, '08/14/13') = 0) AND (inorout = 0)))
-         */
-
             SqlCeCommand com = new SqlCeCommand(command, connection);
             SqlCeDataReader data = com.ExecuteReader();
 
             while (data.Read())
             {
-               // int count = 0;
-               // count = time.Subtract(DateTime.Parse("" + data[12])).Hours;
-                //ma ze???
+               
                 int count = 0;
                 count = time.Subtract(DateTime.Parse("" + data[12])).Minutes;
-                //String sqlString = "UPDATE EmployeeData SET timeheworkonday= '" + count + "' WHERE id= '" + int.Parse("" + data[0]) + "';";
-                //SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
-                //com2.ExecuteNonQuery();
+                
 
                 //add the user to list
                 employee.AddLast(
@@ -259,7 +245,7 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
         }
 
 
-        //return user vacations days left
+        //return user vacations days 
         public int Vacation(int user)
         {
             string command;
@@ -280,7 +266,7 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
         }
 
 
-        //return user sick days left
+        //return user sick days 
         public int Sick(int user)
         {
             string command;
@@ -668,7 +654,7 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
 
 
        //update employee info
-       public void updateEmployee(Employee empnew)
+       public void UpdateEmployee(Employee empnew)
        {
             bool exc = false;
             String sqlString = "";
@@ -768,6 +754,96 @@ WHERE  (DATEDIFF(dd, ee.dateandtime, '08/14/13') = 0) AND (ee.inorout = 1) AND (
 
            return false;
        }
+
+
+        //type=1=sick, type=2=vaction
+        public int[] SickVactionMonth(int id,int year,int type)
+        {      
+            string command;
+            SqlCeCommand com;
+           
+            connect();
+
+
+            command = "SELECT date FROM RequestsAndComments WHERE approve = 1 AND type='" + type+ "' AND idsender='" + id + "' ;";
+
+            com = new SqlCeCommand(command, connection);
+
+            SqlCeDataReader data = com.ExecuteReader();
+         
+            int[] array= {0,0,0,0,0,0,0,0,0,0,0,0,0};
+            
+            
+
+            while (data.Read())
+            {
+                if (DateTime.Parse("" + (data[0])).Date.Year == year)
+                {
+                    int m = DateTime.Parse("" + (data[0])).Date.Month;
+                     array[m - 1] = (array[m - 1] + 1);
+                }
+            }
+
+
+            disconnect();
+            return array;
+        }
+
+        //if type=1 =sick, if type=2=vaction
+        public int[] Sum(int id, int type, int year)
+        {
+            int[] array = { 0, 0 ,0,0};//0=was,1=newhave,2=lass,
+            int x = 0;
+            if (type == 1)
+            {
+               x= Sick(id);
+            }
+
+            if (type == 2)
+            {
+                x = Vacation(id);
+            }
+
+           int [] arraysum= SickVactionMonth(id, year, type);
+           int sum = 0;
+           for (int i = 0; i < arraysum.Length; i++)
+           {
+               sum=sum+arraysum[i];
+           }
+
+           array[0] = x;
+           array[1] = sum;
+           if ((x - sum) < 0)
+           {
+               array[2] = sum - x;
+               array[3] = 0;
+           }
+
+           else
+           {
+               array[2] = 0;
+               array[3] = x-sum;
+           }
+
+           return array;
+
+        }
+
+
+
+        //if message approve
+        public void MenApprove(int id)
+        {
+
+            connect();
+
+            String sqlString = "UPDATE RequestsAndComments SET approve= '" + 1 + "' WHERE id= '" + id + "';";
+            SqlCeCommand com = new SqlCeCommand(sqlString, connection);
+            com.ExecuteNonQuery();
+
+            disconnect();
+            return;
+        }
 
 
     }
