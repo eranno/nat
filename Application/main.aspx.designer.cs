@@ -40,6 +40,24 @@ namespace Application {
         protected global::System.Web.UI.WebControls.Label last;
         
         /// <summary>
+        /// admin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel admin;
+        
+        /// <summary>
+        /// view control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl view;
+        
+        /// <summary>
         /// Table1 control.
         /// </summary>
         /// <remarks>

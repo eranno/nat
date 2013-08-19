@@ -10,6 +10,8 @@ namespace Application
     public partial class main : System.Web.UI.Page
     {
         private EmployeeBL bl;
+        private Employee employee;
+        private Employee admin;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -19,7 +21,13 @@ namespace Application
 
             //get user details
             bl = new EmployeeBL();
-            Employee employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
+            if (Request.QueryString["id"] != null) {
+                admin = bl.GetEmployeeId(int.Parse("" + Session["id"]));
+                employee = bl.GetEmployeeId(int.Parse("" + Request.QueryString["id"]));
+            }
+            else {
+                employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
+            }
 
             //user info
             last.Text = employee.LastName;
@@ -47,11 +55,23 @@ namespace Application
             }
              */
 
-            //manager info
-            if (employee.Rank == 1)
+
+            //Admin
+            if (employee.Rank == 1) {
+
+                //view user details
+                admin.Visible = true;
+                view.InnerText = "אתה מחוב"
+
+                //show admin extra info
                 Div1.Visible = true;
-            else
+            }
+
+            else {
+                admin.Visible = false;
                 Div1.Visible = false;
+            }
+
         }
     }
 }

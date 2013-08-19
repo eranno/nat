@@ -18,6 +18,12 @@
             <br /><br />
         </div>
     </div>
+
+    <asp:Panel ID="admin" runat="server">
+        <div id="view" class="frame" runat="server" visible="true">
+        </div>
+    </asp:Panel>
+
     <!--
     <div class="frame">
         <asp:Table ID="Table1" GridLines="Both" runat="server">

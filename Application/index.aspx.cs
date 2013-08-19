@@ -37,6 +37,9 @@ namespace Application
             //everything is ok
             if ( bl.LogInorOut(int.Parse(id.Text), password.Text, 1) )
             {
+                if (bl.IsManger(int.Parse(id.Text)))
+                    Session["admin"] = true;
+
                 Session["id"] = id.Text;
                 Response.Redirect("main.aspx");
             }
