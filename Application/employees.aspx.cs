@@ -86,12 +86,8 @@ namespace Application
             int wage = int.Parse(new_wage.Text);
             int minhours = int.Parse(new_minhours.Text);
             int maxhours = int.Parse(new_maxhours.Text);
-            int overtimeinday = int.Parse(new_overtimeinday.Text);
-            int overtimeinmonth = int.Parse(new_overtimeinmonth.Text);
             int sick = int.Parse(new_sick.Text);
             int vacation = int.Parse(new_vacation.Text);
-            int timeheworkonday = int.Parse(new_timeheworkonday.Text);
-            int timeheworkonmonth = int.Parse(new_timeheworkonmonth.Text);
 
             //add new employee
             Employee employee = new Employee(
@@ -102,12 +98,12 @@ namespace Application
                 wage,
                 minhours,
                 maxhours,
-                overtimeinday,
-                overtimeinmonth,
+                0,
+                0,
                 sick,
                 vacation,
-                timeheworkonday,
-                timeheworkonmonth
+                0,
+                0
             );
 
             bool ok = bl.AddEmployee(employee);

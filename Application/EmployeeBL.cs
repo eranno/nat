@@ -133,8 +133,17 @@ namespace Application
                 DateTime date = DateTime.Now;
                 dateoftime = date.ToString("MM/dd/yyyy");
             }
-            Massege mes = new Massege(idreceiver, idsender, type, note, 0, dateoftime, 0);
-           dal.SetMassege(mes);
+
+
+            DateTime date1 = DateTime.Now;
+            DateTime month = DateTime.Parse("" + dateoftime);
+            
+
+            if ((month.Month.Equals(date1.Month))||(((month.AddMonths(-1).Month).Equals(date1.Month))))
+            {
+                Massege mes = new Massege(idreceiver, idsender, type, note, 0, dateoftime, 0);
+                dal.SetMassege(mes);
+            }
            return;
         }
 
@@ -156,10 +165,11 @@ namespace Application
 
 
 
-        //*************************************
-
         public LinkedList<Report> Reports(int user, DateTime date)
         {
+          DateTime now1= DateTime.Now;
+            if(now1.Subtract(date).TotalMinutes<0)
+                return null;
             return dal.Reports(user,date);
         }
 
@@ -192,22 +202,43 @@ namespace Application
         //if message approve
         public void MenApprove(int id)
         {
-
             dal.MenApprove(id);
         }
 
 
 
+        //check if he have vacation day/sick day
+        public int CheckVac(int id, int days, int year, int type)
+        {
+            return dal.CheckVac(id, days, year,type);
+        }
 
 
+        //פונקציה המחזירה את החריגה משעות העודף היומי
+        public int ExcessHours(int id)
+        {
+            DateTime entry = dal.ExcessHours(id);
+            DateTime now1 = DateTime.Now;
 
+            if (now1.Subtract(entry).TotalMinutes < 0)
+            {
+                return (int)now1.Subtract(entry).TotalMinutes;
+             
+            }
 
+            return 0;
+        }
 
+        //בודק אם התאריכים חוקים
+        public bool VacLegal(string from, string to)
+        {
+           return  dal.VacLegal(from, to);
+        }
 
-
-
-
-
-
+        //כמות הימי חופש שהעובד ביקש
+        public int SumDays(string from, string to)
+        {
+            return dal.SumDays(from, to);
+        }
     }
 }

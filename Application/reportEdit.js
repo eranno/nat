@@ -9,6 +9,7 @@ function toggle(id, t) {
         //create selection
         var select = document.createElement('select');
         select.id = "typeInput" + id;
+        var option0 = document.createElement('option'); select.appendChild(option0); option0.value = "0"; option0.innerText = "";
         var option1 = document.createElement('option'); select.appendChild(option1); option1.value = "1"; option1.innerText = "sick";
         var option2 = document.createElement('option'); select.appendChild(option2); option2.value = "2"; option2.innerText = "vacation";
         var option3 = document.createElement('option'); select.appendChild(option3); option3.value = "3"; option3.innerText = "fast";
@@ -16,6 +17,7 @@ function toggle(id, t) {
 
         //mark selection
         switch ($("type" + id).innerText) {
+            case "":            option0.setAttribute("selected", "selected"); break;
             case "sick":        option1.setAttribute("selected", "selected"); break;
             case "vacation":    option2.setAttribute("selected", "selected"); break;
             case "fast":        option3.setAttribute("selected", "selected"); break;
@@ -30,6 +32,7 @@ function toggle(id, t) {
             id = this.id.substr(9);
             var text = "";
             switch ($("typeInput" + id).value) {
+                case "0": text = "";            break;
                 case "1": text = "sick";        break;
                 case "2": text = "vacation";    break;
                 case "3": text = "fast";        break;
@@ -38,7 +41,7 @@ function toggle(id, t) {
             $("type" + id).innerHTML = text;
 
             //update on db
-            ajax(location.search.substr(4), id, text, 0);
+            ajax(location.search.substr(1), (id+1), text, 0);
 
             //make it clickable again
             el_type[id].addEventListener('click', function () {
@@ -63,7 +66,7 @@ function toggle(id, t) {
             id = this.id.substr(9)
             $("note" + id).innerHTML = $("noteInput" + id).value;
 
-            ajax(location.search.substr(4), id, $("noteInput" + id).value, 1);
+            ajax(location.search.substr(1), (id + 1), $("note" + id).innerHTML, 1);
 
             //make it clickable again
             el_note[id].addEventListener('click', function () {
@@ -78,7 +81,7 @@ function toggle(id, t) {
 
 
 var xmlHttpRequest;
-function ajax(id,day,reason,type) {
+function ajax(qry,day,reason,type) {
     //create XMLHttpRequest object
     xmlHttpRequest = (window.XMLHttpRequest) ?
     new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP");
@@ -88,7 +91,7 @@ function ajax(id,day,reason,type) {
         return;
 
     //Initiate the XMLHttpRequest object
-    xmlHttpRequest.open("GET", "update.aspx?id="+id+"&day="+day+"&reason="+reason+"&type="+type, true);
+    xmlHttpRequest.open("GET", "update.aspx?"+qry+"&day="+day+"&txt="+reason+"&type="+type, true);
 
     //Setup the callback function
     xmlHttpRequest.onreadystatechange = StateChange;
@@ -104,6 +107,34 @@ function StateChange() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    //block admins
+    if (getQueryString("id") != "")
+        return;
+
+    //block all but this month and past month
+    if (getQueryString("year") != "" && getQueryString("month") != "") {
+        var date = new Date(getQueryString("year"), (getQueryString("month")-1), 1, 1, 1, 1, 1);
+        var now = new Date();
+
+        //this month
+        if (!(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth())) {
+
+            //past month
+            var month = date.getMonth();
+            var year = date.getFullYear();
+            month++;
+            if (month == 12) {
+                month = 0;
+                year++;
+            }
+            
+            if (!(now.getFullYear() == year && now.getMonth() == month))
+                return;
+        }
+    }
+
+
     el_type = document.getElementsByClassName('type');
     el_note = document.getElementsByClassName('note');
     for (var i = 0; i < el_type.length; i++) {
@@ -116,9 +147,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //note
         el_note[i].addEventListener('click', function () {
-            toggle(this.id.substr(4), 1);
-            this.removeEventListener('click', arguments.callee);
+
+            //force type (reason) first
+            if ($("type" + this.id.substr(4)).innerText == "") {
+                alert("חובה לבחור סיבה לפני תיאור הנימוק!");
+            } else {
+                toggle(this.id.substr(4), 1);
+                this.removeEventListener('click', arguments.callee);
+            }
         });
     }
 });
 
+
+//get querystring paramters
+function getQueryString(name) {
+    var qry = location.search.substr(1);
+    if (typeof qry !== undefined && qry !== "") {
+        var keyValueArray = qry.split("&");
+        for (var i = 0; i < keyValueArray.length; i++) {
+            if (keyValueArray[i].indexOf(name) > -1) {
+                return keyValueArray[i].split("=")[1];
+            }
+        }
+    }
+    return "";
+}

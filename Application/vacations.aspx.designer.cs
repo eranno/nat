@@ -94,6 +94,15 @@ namespace Application {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
+        /// toggle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl toggle;
+        
+        /// <summary>
         /// start control.
         /// </summary>
         /// <remarks>
@@ -112,13 +121,22 @@ namespace Application {
         protected global::System.Web.UI.WebControls.TextBox end;
         
         /// <summary>
-        /// during control.
+        /// err control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox during;
+        protected global::System.Web.UI.WebControls.Label err;
+        
+        /// <summary>
+        /// check1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox check1;
         
         /// <summary>
         /// button control.

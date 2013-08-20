@@ -11,6 +11,7 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
+    <!-- header -->
     <div class="frame header">
         <div class="left">
             <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
@@ -18,9 +19,9 @@
         </div>
         <div class="right">
             <a href="index.aspx?r=outoftime">השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
-            <br /><br />
+            <br /><a href="main.aspx">[לדף הראשי]</a><br />
         </div>
-    </div>
+    </div> 
 
     <asp:Panel ID="Panel1" runat="server">
         <div id="msgs" runat="server" class="frame" visible="false"></div>
@@ -99,26 +100,17 @@
         <asp:TextBox runat="server" ID="new_minhours" TextMode="SingleLine"></asp:TextBox>
         <br /><span>שעות מקסימום</span>
         <asp:TextBox runat="server" ID="new_maxhours" TextMode="SingleLine"></asp:TextBox>
-        <br /><span>overtimeinday</span>
-        <asp:TextBox runat="server" ID="new_overtimeinday" TextMode="SingleLine"></asp:TextBox>
         <br /><span>דרגה</span>
         <asp:TextBox runat="server" ID="new_rank" TextMode="SingleLine"></asp:TextBox>
         <br /><span>שכר</span>
         <asp:TextBox runat="server" ID="new_wage" TextMode="SingleLine"></asp:TextBox>
-        <br /><span>overtimeWages</span>
-        <asp:TextBox runat="server" ID="new_overtimeWages" TextMode="SingleLine"></asp:TextBox>
-        <br /><span>overtimeinmonth</span>
-        <asp:TextBox runat="server" ID="new_overtimeinmonth" TextMode="SingleLine"></asp:TextBox>
-        <br /><span>timeheworkonday</span>
-        <asp:TextBox runat="server" ID="new_timeheworkonday" TextMode="SingleLine"></asp:TextBox>
-        <br /><span>timeheworkonmonth</span>
-        <asp:TextBox runat="server" ID="new_timeheworkonmonth" TextMode="SingleLine"></asp:TextBox>
         <br />
 
         <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click4"/>
     </div>
     </form>
 
+    <!-- footer -->
     <div class="frame footer"></div>
 
 </body>

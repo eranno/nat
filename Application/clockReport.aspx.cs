@@ -10,9 +10,10 @@ namespace Application
     public partial class clockReport : System.Web.UI.Page
     {
         private EmployeeBL bl;
-        private Employee employee;
-        //private Employee watchEmployee;
-        private LinkedList<Report> repList;
+        private Employee employee;          //the logged in user
+        private Employee watchEmployee;     //if admin, show him other users
+        private LinkedList<Report> repList; //report days list
+        DateTime time;                      //report date
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,12 +23,43 @@ namespace Application
             bl = new EmployeeBL();
             employee = bl.GetEmployeeId(int.Parse("" + Session["id"]));
 
+
+            //timeing
+            if (Request.QueryString["year"] != null && Request.QueryString["month"] != null)
+            {
+                time = Convert.ToDateTime("01/" + Request.QueryString["month"] + "/" + Request.QueryString["year"]);
+            } else time = DateTime.Now;
+
+            user_month.Text = time.ToString("MMMM");
+            user_year.Text = time.ToString("yyyy");
+
+            //  set directions  //
+            //past
+            past.Text = "<a href=\"clockReport.aspx?";
+            if (Request.QueryString["id"] != null)
+                past.Text += "id=" + Request.QueryString["id"] + "&";
+            past.Text += "year=" + time.AddMonths(-1).ToString("yyyy") + "&month=" + time.AddMonths(-1).ToString("MM") + "\"><<</a>";
+            //next
+            if (time.AddMonths(1) < DateTime.Now)      //DateTime.Now.AddMonths(1).Equals(time))
+            {
+                next.Text = "<a href=\"clockReport.aspx?";
+                if (Request.QueryString["id"] != null)
+                    next.Text += "id=" + Request.QueryString["id"] + "&";
+                next.Text += "year=" + time.AddMonths(1).ToString("yyyy") + "&month=" + time.AddMonths(1).ToString("MM") + "\">>></a>";
+            }
+
             //if admin & watch employee
             if (employee.Rank == 1 && Request.QueryString["id"] != null)
             {
-                repList = bl.Reports(int.Parse("" + Request.QueryString["id"]), DateTime.Now);
+                repList = bl.Reports(bl.toInt("" + Request.QueryString["id"]), time);
+                if (repList == null)
+                    Response.Redirect("error.aspx?e=משתמש אינו קיים!");
+
+                watchEmployee = bl.GetEmployeeId(int.Parse("" + Request.QueryString["id"]));
+                user_first.Text = watchEmployee.FirstName;
+                user_last.Text = watchEmployee.LastName;
             } else {
-                repList = bl.Reports(int.Parse("" + Session["id"]), DateTime.Now);
+                repList = bl.Reports(int.Parse("" + Session["id"]), time);
             }
 
 
@@ -35,8 +67,8 @@ namespace Application
             last.Text = employee.LastName;
             first.Text = employee.FirstName;
 
-
             //report
+            int totalHoursThisMonth = 0;
             int count = 0;
             foreach (Report r in repList)
             {
@@ -74,6 +106,9 @@ namespace Application
                 }
                 else
                 {
+                    //count total hours
+                    totalHoursThisMonth += r.Hours;
+
                     sumhours.Text = "" + zeroLead(r.Hours / 60) + ":" + zeroLead(r.Hours - (r.Hours / 60) * 60);//"" + r.Hours;
                     excesshours.Text = "" + zeroLead(r.Excesshours / 60) + ":" + zeroLead(r.Excesshours - (r.Excesshours / 60) * 60);
                     lackhours.Text = "" + zeroLead(r.Lackhours / 60) + ":" + zeroLead(r.Lackhours - (r.Lackhours / 60) * 60) + "-";
@@ -91,6 +126,9 @@ namespace Application
 
                 count++;
             }
+
+            //summery
+            totalHours.Text = "" + zeroLead(totalHoursThisMonth / 60) + ":" + zeroLead(totalHoursThisMonth - (totalHoursThisMonth / 60) * 60);
 
         }
 

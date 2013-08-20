@@ -10,37 +10,31 @@ namespace Application
     public partial class update : System.Web.UI.Page
     {
         private EmployeeBL bl;
+        private DateTime dt;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["id"] == null)
                 return;
 
+            bl = new EmployeeBL();
             
+            //validate
+            //bl.SetMassege(, , int.Parse("" + Request.QueryString["type"]), Request.QueryString["txt"], Request.QueryString["day"]);
+            int idreceiver = 55555;
+            int idsender = int.Parse("" + Session["id"]);
+            int type = bl.toInt("" + Request.QueryString["type"]);
+            string note = Request.QueryString["txt"];
+            string day = Request.QueryString["day"];
+            string month = Request.QueryString["month"];
+            string year = Request.QueryString["year"];
 
-            //Request.QueryString["id"]
-            //Request.QueryString["t"]
-            //Request.QueryString["t"]
-            //
-            //xmlHttpRequest.open("GET", "update.aspx?id=" + id + "&day=" + day + "&txt=" + txt + "&type=" + type, true);
+            if (day == "" || month == "" || year == "")
+                dt = Convert.ToDateTime(day+"/"+month+"/"+year);
+            else
+                dt = DateTime.Now;
 
-
-            /*
-        private int idreceiver;
-        private int idsender;
-        private int type;
-        private string note;
-        private int approve;
-        private string date;
-        private int read;
-        private string lastName;
-        private string firstName; 
-             */
-
-
-
-            //Massege msg = new Massege(55555, int.Parse("" + Session["id"]), int.Parse("" + Request.QueryString["type"]), Request.QueryString["txt"], 0, Request.QueryString["day"], 0, "", "");
-            bl.SetMassege(55555, int.Parse("" + Session["id"]), int.Parse("" + Request.QueryString["type"]), Request.QueryString["txt"], Request.QueryString["day"]);
+            bl.SetMassege(idreceiver, idsender, type, note, dt.ToString("dd/MM/yyyy"));
             Response.Write( "arg" );
         }
     }

@@ -1,14 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="messages.aspx.cs" Inherits="Application.messages" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="error.aspx.cs" Inherits="Application.error" %>
 
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
 <head id="Head1" runat="server">
     <title>nat</title>
     <link rel="stylesheet" href="main.css" />
-    <link rel="icon" type="image/png" href="favicon.ico" />
     <script type="application/x-javascript" src="clock.js"></script>
-    <script type="application/x-javascript" src="msgs.js"></script>
 </head>
 <body>
     <!-- header -->
@@ -23,17 +20,9 @@
         </div>
     </div> 
 
-    <form class="frame" runat="server">        
-        הודעות: <asp:Label ID="msgs" runat="server"></asp:Label>
-        <asp:Table ID="Table1" GridLines="Both" runat="server">
-            <asp:TableHeaderRow>
-                <asp:TableHeaderCell>תאריך</asp:TableHeaderCell>
-                <asp:TableHeaderCell>השולח</asp:TableHeaderCell>
-                <asp:TableHeaderCell>סוג</asp:TableHeaderCell>
-                <asp:TableHeaderCell>מאושר</asp:TableHeaderCell>
-            </asp:TableHeaderRow>
-        </asp:Table>
-    </form>
+    <div class="frame">
+        <%Response.Write(Request.QueryString["e"]); %>
+    </div>
 
     <!-- footer -->
     <div class="frame footer"></div>

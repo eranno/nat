@@ -202,15 +202,6 @@ namespace Application {
         protected global::System.Web.UI.WebControls.TextBox new_maxhours;
         
         /// <summary>
-        /// new_overtimeinday control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox new_overtimeinday;
-        
-        /// <summary>
         /// new_rank control.
         /// </summary>
         /// <remarks>
@@ -227,42 +218,6 @@ namespace Application {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox new_wage;
-        
-        /// <summary>
-        /// new_overtimeWages control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox new_overtimeWages;
-        
-        /// <summary>
-        /// new_overtimeinmonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox new_overtimeinmonth;
-        
-        /// <summary>
-        /// new_timeheworkonday control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox new_timeheworkonday;
-        
-        /// <summary>
-        /// new_timeheworkonmonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox new_timeheworkonmonth;
         
         /// <summary>
         /// button control.

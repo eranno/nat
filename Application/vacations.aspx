@@ -10,6 +10,7 @@
     <script type="application/x-javascript" src="clock.js"></script>
 </head>
 <body>
+    <!-- header -->
     <div class="frame header">
         <div class="left">
             <span><asp:Label ID="first" runat="server"></asp:Label> <asp:Label ID="last" runat="server"></asp:Label></span>
@@ -17,9 +18,9 @@
         </div>
         <div class="right">
             <a href="index.aspx?r=outoftime">השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
-            <br /><br />
+            <br /><a href="main.aspx">[לדף הראשי]</a><br />
         </div>
-    </div>
+    </div> 
 
     <div class="frame">
         <h3>מאזן חופשות</h3>
@@ -36,21 +37,23 @@
     </div>
 
     <form class="frame" id="form1" runat="server">
-        <div id="toggle">
-            <h3>בקשת חופשה</h3>
-            <div class="toggle">
-                <span>מתאריך</span>
-                <asp:TextBox runat="server" ID="start" TextMode="Date"></asp:TextBox>
-                <br /><span>עד לתאריך</span>
-                <asp:TextBox runat="server" ID="end" TextMode="Date"></asp:TextBox>
-                <br /><span>משך</span>
-                <asp:TextBox runat="server" ID="during" TextMode="Number"></asp:TextBox>
-                <br />
-                <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click"/>
+        <asp:Panel runat="server">
+            <div id="toggle" runat="server">
+                <h3>בקשת חופשה</h3>
+                <div class="toggle">
+                    <span>מתאריך</span>
+                    <asp:TextBox runat="server" ID="start" TextMode="Date"></asp:TextBox>
+                    <br /><span>עד לתאריך</span>
+                    <asp:TextBox runat="server" ID="end" TextMode="Date"></asp:TextBox>
+                    <br /><asp:Label ID="err" runat="server"></asp:Label>
+                    <asp:CheckBox ID="check1" Text="אישור חריגה" runat="server" Visible="false" />
+                    <asp:Button id="button" Text="שלח" runat="server" CssClass="button" OnClick="button_Click"/>
+                </div>
             </div>
-        </div>
+        </asp:Panel>
     </form>
 
+    <!-- footer -->
     <div class="frame footer"></div>
 
 </body>

@@ -19,12 +19,14 @@
         </div>
         <div class="right">
             <a href="index.aspx?r=outoftime">השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
-            <br /><br />
+            <br /><a href="main.aspx">[לדף הראשי]</a><br />
         </div>
     </div> 
 
     <div id="clockReports" class="frame<% if (Request.QueryString["id"] != null) Response.Write(" admin"); %>">
         <h3>דו"ח שעות נוכחות</h3>
+        <asp:Label ID="user_first" runat="server"></asp:Label> <asp:Label ID="user_last" runat="server"></asp:Label>
+        <br /><asp:Label ID="past" runat="server"><<</asp:Label> <asp:Label ID="user_month" runat="server"></asp:Label> <asp:Label ID="user_year" runat="server"></asp:Label> <asp:Label ID="next" runat="server">>></asp:Label>
         <asp:Table ID="Table1" GridLines="Both" runat="server">
             <asp:TableHeaderRow>
                 <asp:TableHeaderCell ColumnSpan="3"></asp:TableHeaderCell>
@@ -43,6 +45,14 @@
             </asp:TableHeaderRow>
         </asp:Table>
     </div>
+
+    <div class="frame">
+        <h3>סיכום דו"ח שעות:</h3>
+        סה"כ שעות חודשי: <asp:Label ID="totalHours" runat="server"></asp:Label>
+    </div> 
+
+    <!-- footer -->
+    <div class="frame footer"></div>
 
 </body>
 </html>

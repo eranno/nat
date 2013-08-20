@@ -62,6 +62,8 @@
     <Content Include="App_Data\StatesDB.sdf" />
     <Content Include="clock.js" />
     <Content Include="clockReport.aspx" />
+    <Content Include="error.aspx" />
+    <Content Include="info.aspx" />
     <Content Include="msgs.js" />
     <Content Include="default.aspx" />
     <Content Include="disconnect.aspx" />
@@ -110,12 +112,26 @@
     <Compile Include="employees.aspx.designer.cs">
       <DependentUpon>employees.aspx</DependentUpon>
     </Compile>
+    <Compile Include="error.aspx.cs">
+      <DependentUpon>error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="error.aspx.designer.cs">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
     <Compile Include="index.aspx.cs">
       <DependentUpon>index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="info.aspx.cs">
+      <DependentUpon>info.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="info.aspx.designer.cs">
+      <DependentUpon>info.aspx</DependentUpon>
     </Compile>
     <Compile Include="main.aspx.cs">
       <DependentUpon>main.aspx</DependentUpon>

@@ -83,6 +83,8 @@ namespace Application
         {
             Button clickedButton = (Button)sender;
             clickedButton.Text = (clickedButton.Text == "אשר" ? "בטל" : "אשר");
+
+            bl.MenApprove(bl.toInt(clickedButton.ID.Substring(3)));
         }
     }
 }

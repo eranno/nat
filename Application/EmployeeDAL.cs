@@ -55,7 +55,6 @@ namespace Application
                 {
                     ok = true;
                   
-
                     //if not entered today than mark enter time
                     if (!user.Equals(data[1]))
                     {
@@ -174,7 +173,7 @@ namespace Application
             if (newpass1.Equals(newpass2))
             {
                 connect();
-                String sqlString = "UPDATE EmployeeData SET password= '" + newpass1 + "' WHERE id= '" + user + "' AND BINARY password= '" + oldpass + "';";
+                String sqlString = "UPDATE EmployeeData SET password= '" + newpass1 + "' WHERE id= '" + user + "' AND password= '" + oldpass + "';";
                 SqlCeCommand com = new SqlCeCommand(sqlString, connection);
                 int numberOfRecords = com.ExecuteNonQuery();
                 disconnect();
@@ -360,7 +359,9 @@ namespace Application
         public void SetMassege(Massege mes)
         {
             connect();
-            String sqlString = "INSERT INTO RequestsAndComments VALUES('" + mes.Idreceiver + "','" + mes.Idsender + "','" + mes.Type + "','" + mes.Note + "','" + mes.Approve + "','" + mes.Date + "','" + mes.Read + "');";
+
+            String sqlString = "INSERT INTO RequestsAndComments (idreceiver, idsender, type, note, approve, date, isread) "
+                                +"VALUES ('" + mes.Idreceiver + "','" + mes.Idsender + "','" + mes.Type + "','" + mes.Note + "','" + mes.Approve + "','" + mes.Date + "','" + mes.Read + "');";
             SqlCeCommand com = new SqlCeCommand(sqlString, connection);
             com.ExecuteNonQuery();
             disconnect();
@@ -440,7 +441,7 @@ namespace Application
 
             while (data.Read())
             {//CONVERT(datetime, date, 100) AS 
-                if (int.Parse("" + data[2]) != 5)
+                if (int.Parse("" + data[2]) <5)
                 {
                     //int x = 0;
                     foreach (Report i in rep)
@@ -648,6 +649,7 @@ namespace Application
                 case 3: return "fast";
                 case 4: return "job";
                 case 5: return "vacation request";
+                case 6: return "exceeded sick days";
                 default: return ""; //-1
             }
         }
@@ -662,78 +664,78 @@ namespace Application
 
             if (!empnew.FirstName.Equals(""))
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "firstname= '" + empnew.FirstName;
+                if (exc) sqlString += ", ";
+                sqlString += "firstname='" + empnew.FirstName +"'";
                 exc = true;
             }
 
             if (!empnew.LastName.Equals(""))
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "lastname= '" + empnew.LastName;
+                if (exc) sqlString += ", ";
+                sqlString += "lastname='" + empnew.LastName + "'";
                 exc = true;
             }
 
             if (empnew.Rank != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "rank= '" + empnew.Rank;
+                if (exc) sqlString += ", ";
+                sqlString += "rank='" + empnew.Rank + "'";
                 exc = true;
             }
 
             if (empnew.Wage != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "wage= '" + empnew.Wage;
+                if (exc) sqlString += ", ";
+                sqlString += "wage='" + empnew.Wage + "'";
                 exc = true;
             }
 
             if (empnew.Minhours != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "minhours= '" + empnew.Minhours;
+                if (exc) sqlString += ", ";
+                sqlString += "minhours='" + empnew.Minhours + "'";
                 exc = true;
             }
 
             if (empnew.Maxhours != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "maxhours= '" + empnew.Maxhours;
+                if (exc) sqlString += ", ";
+                sqlString += "maxhours='" + empnew.Maxhours + "'";
                 exc = true;
             }
 
             if (empnew.Overtimeinday != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "overtimeinday= '" + empnew.Overtimeinday;
+                if (exc) sqlString += ", ";
+                sqlString += "overtimeinday='" + empnew.Overtimeinday + "'";
                 exc = true;
             }
 
             if (empnew.Overtimeinmonth != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "overtimeinmonth= '" + empnew.Overtimeinmonth;
+                if (exc) sqlString += ", ";
+                sqlString += "overtimeinmonth='" + empnew.Overtimeinmonth + "'";
                 exc = true;
             }
 
             if (empnew.Sick != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "sick= '" + empnew.Sick;
+                if (exc) sqlString += ", ";
+                sqlString += "sick='" + empnew.Sick + "'";
                 exc = true;
             }
 
             if (empnew.Vacation != -1)
             {
-                if (exc) sqlString += " AND ";
-                sqlString += "vacation= '" + empnew.Vacation;
+                if (exc) sqlString += ", ";
+                sqlString += "vacation='" + empnew.Vacation + "'";
                 exc = true;
             }
 
             //execute
             if (exc)
             {
-                sqlString = "UPDATE EmployeeData SET " + sqlString + " WHERE id= '" + empnew.Id + "';";
+                sqlString = "UPDATE EmployeeData SET " + sqlString + " WHERE id='" + empnew.Id + "';";
                 connect();
                 SqlCeCommand com2 = new SqlCeCommand(sqlString, connection);
                 com2.ExecuteNonQuery();
@@ -741,19 +743,6 @@ namespace Application
             }
        }
 
-
-
-       public bool Overtimeinday(Employee emp)
-       {
-
-           return false;
-       }
-
-       public bool Overtimeinmonth(Employee emp)
-       {
-
-           return false;
-       }
 
 
         //type=1=sick, type=2=vaction
@@ -792,7 +781,7 @@ namespace Application
         //if type=1 =sick, if type=2=vaction
         public int[] Sum(int id, int type, int year)
         {
-            int[] array = { 0, 0 ,0,0};//0=was,1=newhave,2=lass,
+            int[] array = { 0, 0 ,0,0};//0=was,1=use,2=lass,3: now have
             int x = 0;
             if (type == 1)
             {
@@ -837,7 +826,7 @@ namespace Application
 
             connect();
 
-            String sqlString = "UPDATE RequestsAndComments SET approve= '" + 1 + "' WHERE id= '" + id + "';";
+            String sqlString = "UPDATE RequestsAndComments SET approve='1' WHERE id= '" + id + "';";
             SqlCeCommand com = new SqlCeCommand(sqlString, connection);
             com.ExecuteNonQuery();
 
@@ -846,5 +835,85 @@ namespace Application
         }
 
 
+       //בודק אם יש מספיק ימי חופש/מחלה ואם לא מודיע על החריגה
+        public int CheckVac(int id, int days,int year, int type)
+        {
+            int[] array = Sum(id,type, year);
+            if ((array[3] - days) < 0)
+                return Math.Abs(array[3] - days);
+            return 0;
+        }
+
+        public DateTime ExcessHours(int id)
+        {
+             string command;
+            SqlCeCommand com;
+            DateTime now1 = DateTime.Now;
+            string format = "MM/dd/yyyy HH:mm:ss"; 
+            DateTime entry=DateTime.MinValue;
+            connect();
+            
+
+            command = "SELECT dateandtime FROM EntryAndExit WHERE id ='" + id + "' AND  DATEDIFF(dd, dateandtime, '" +now1.ToString(format) + "') = 0; ";
+
+            com = new SqlCeCommand(command, connection);
+
+            SqlCeDataReader data = com.ExecuteReader();
+
+            while (data.Read())
+            {
+                entry = DateTime.Parse(""+ data[0]);
+            }
+
+
+            disconnect();
+
+            return entry;
+        }
+
+
+        //בודק אם בקשת החופשה חוקית
+        public bool VacLegal(string from, string to)
+         {
+            DateTime from1 = DateTime.Parse("" + from);
+            DateTime to1 = DateTime.Parse("" + to);
+            DateTime now = DateTime.Now;
+
+            if ((from1.Month.Equals(to1.Month)) && (from1.Month>=now.Month))
+            {
+                if ((from1.Day < to1.Day) && (from1.Day >= now.Day))
+                {
+                   return true;
+
+                }
+                else
+                    return false;
+
+            }
+            if ((((to1.AddMonths(-1).Month).Equals(from1.Month)))&& (from1.Month>=now.Month))
+            {
+
+                return true;
+            
+            }
+
+
+            return false;
+          }
+        //מספר ימי החופש שהעובד ביקש
+        public int SumDays(string from, string to)
+        {
+             DateTime from1 = DateTime.Parse("" + from);
+             DateTime to1 = DateTime.Parse("" + to);
+             int day1=0;
+             TimeSpan span= to1.Subtract(from1);
+             day1= (int)span.TotalDays;
+             return day1;
+
+        }
+
+
+
+    
     }
 }

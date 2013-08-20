@@ -16,9 +16,9 @@
         </div>
         <div class="right">
             <a href="index.aspx?r=outoftime">השהייה</a> / <a href="disconnect.aspx">התנתקות</a>
-            <br /><br />
+            <br /><a href="main.aspx">[לדף הראשי]</a><br />
         </div>
-    </div>
+    </div> 
 
     <asp:Panel ID="showUserDetails" runat="server">
         <div id="view" class="frame" runat="server" visible="true" style="background-color:#e8ffaf">
@@ -31,12 +31,17 @@
         <a href="vacations.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">חופשות</a>
         <a href="sick.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">ימי מחלה</a>
         <a href="clockReport.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">דו"ח שעות</a>
-        <a href="messages.aspx<% if (Request.QueryString["id"] != null) Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">הודעות[<asp:Label ID="msgs" runat="server"></asp:Label>]</a>
+        <% if (Request.QueryString["id"] != null) {%>
+            <a href="info.aspx<% Response.Write("?id=" + Request.QueryString["id"]); %>" class="button">פרטים</a>
+        <% } else { %> 
+            <a href="messages.aspx" class="button">הודעות[<asp:Label ID="msgs" runat="server"></asp:Label>]</a>
+        <% } %>
     </div>
     <asp:Panel ID="Panel1" runat="server">
         <div id="Div1" class="frame" runat="server" visible="true">
             <span>ניהול:</span>
-            <a href="employees.aspx" class="button" style="margin-right:-3px;">עובדים</a>
+            <a href="info.aspx" class="button">פרטים</a>
+            <% if (Session["id"] != null){%><a href="employees.aspx" class="button">עובדים</a><%}%> 
         </div>
     </asp:Panel>
 
